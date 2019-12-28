@@ -1,0 +1,113 @@
+<h1 id="tableLabel">Payroll Policy</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+<p *ngIf="!PayrollPolicyList"><em class="text-info">Loading...</em></p>
+
+<div class="btn-group">
+  <button class="btn btn-primary" (click)="LoadList()">
+    Refresh
+  </button>
+
+  <button type="button" data-toggle="modal" data-target="#payrollPolicyModal" class="btn btn-success">
+    Add New
+  </button>
+</div>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="PayrollPolicyList">
+  <thead>
+    <tr>
+      <th>PayrollPolicy Id</th>
+      <th>Transport Allowance</th>
+      <th>House Rent</th>
+      <th>Medical Allowance</th>
+      <th>Food Allowance</th>
+      <th>Festival Bonus</th>
+      <th>Povident Fund</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of PayrollPolicyList">
+      <td>{{ p.policyId }}</td>
+      <td>{{p.tA }}</td>
+      <td>{{p.hR }}</td>
+      <td>{{p.mA }}</td>
+      <td>{{p.fA }}</td>
+      <td>{{p.fB }}</td>
+      <td>{{p.pF }}</td>
+
+      <td class="btn-group">
+        <button class="btn btn-primary" (click)="GetPayrollPolicy(d.desigId)">Edit</button>
+        <button class="btn btn-danger" (click)="DeleteConfirmation(p)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="payrollPolicyModal" tabindex="-1" role="dialog" aria-labelledby="payrollPolicyModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="payrollPolicyModalLabel">New Payroll Entry</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" [(ngModel)]="PayrollPolicy.policyId" />
+
+        <div class="form-group">
+          <label>Transport Allowance</label>
+          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.tA" />
+        </div>
+        <div class="form-group">
+          <label>House Rent</label>
+          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.hR" />
+        </div>
+        <div class="form-group">
+          <label>Medical Allowance</label>
+          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.mA" />
+        </div>
+        <div class="form-group">
+          <label>Food Allowance</label>
+          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.fA" />
+        </div>
+        <div class="form-group">
+          <label>Festival Bonus</label>
+          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.fB" />
+        </div>
+        <div class="form-group">
+          <label>Provident Fund</label>
+          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.pF" />
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
+        <button type="button" class="btn btn-primary" (click)="SubmitPayrollPolicy()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span class="h2 text-warning">Delete {{PayrollPolicy.policyId}}?</span>
+      </div>
+      <div class="modal-footer btn-group">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" (click)="DeletePayrollPolicy(PayrollPolicy.policyId)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

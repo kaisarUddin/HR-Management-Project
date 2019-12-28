@@ -1,0 +1,172 @@
+<h1 id="tableLabel">Salary Index</h1>
+
+
+
+<p *ngIf="!SalaryList"><em class="text-info">Loading...</em></p>
+
+
+<div class="btn-group">
+  <button class="btn btn-primary" (click)="LoadList()">
+    Refresh
+  </button>
+
+  <button type="button" data-toggle="modal" data-target="#salaryModal" class="btn btn-success">
+    Create New
+  </button>
+</div>
+
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="SalaryList">
+  <thead>
+    <tr>
+      <th>Salary Id</th>
+      <th>Basic</th>
+      <th>Salary Type</th>
+      <th>T/A</th>
+      <th>H/R</th>
+      <th>M/A</th>
+      <th>F/A</th>
+      <th>Festival Bonus</th>
+      <th>P/F</th>
+      <th>Gross Salary</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let s of SalaryList">
+      <td>{{ s.salaryId }}</td>
+      <td>{{ s.salaryType }}</td>
+      <td>{{ s.basic }}</td>
+      <td>{{ s.transportAllowance }}</td>
+      <td>{{ s.houseRent }}</td>
+      <td>{{ s.medicalAllowance }}</td>
+      <td>{{ s.foodAllowance }}</td>
+      <td>{{ s.festivalBonus }}</td>
+      <td>{{ s.providentFund }}</td>
+      <td>{{ s.grossSalary }}</td>
+      <td class="btn-group">
+        <button class="btn btn-primary" (click)="GetSalary(s.salaryId)">Edit</button>
+        <button class="btn btn-danger" (click)="DeleteConfirmation(s)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="salaryModal" tabindex="-1" role="dialog" aria-labelledby="salaryModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="salaryModalLabel">New Person</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" [(ngModel)]="Salary.salaryId" />
+
+
+        <div class="form-group">
+          <label>Salary Type</label>
+          <input type="radio" class="" name="salary" [(ngModel)]="Salary.salarytype" value="Hourly" />Hourly
+          <input type="radio" class="" name="salary" [(ngModel)]="Salary.salarytype" value="Monthly" />Monthly
+          <input type="radio" class="" name="salary" [(ngModel)]="Salary.salarytype" value="Yearly" />Yearly
+        </div>
+        <div class="form-group">
+          <label>Basic</label>
+          <input type="number" class=" form-control" [(ngModel)]="Salary.basic" />
+        </div>
+
+        <div class="form-group">
+          <label>T/A</label>
+          <input type="number" class=" form-control" [(ngModel)]="Salary.transportAllowance" />
+        </div>
+
+
+        <div class="form-group">
+          <label>H/R</label>
+          <input type="number" class=" form-control" [(ngModel)]="Salary.houseRent" />
+        </div>
+
+        <div class="form-group">
+          <label>M/A</label>
+          <input type="number" class=" form-control" [(ngModel)]="Salary.medicalAllowance" />
+        </div>
+        <div class="form-group">
+          <label>F/A</label>
+          <input type="number" class=" form-control" [(ngModel)]="Salary.foodAllowance" />
+        </div>
+        <div class="form-group">
+          <label>Festival Bonus</label>
+          <input type="number" class=" form-control" [(ngModel)]="Salary.festivalBonus" />
+        </div>
+        <div class="form-group">
+          <label>P/F</label>
+          <input type="text" class=" form-control" [(ngModel)]="Salary.providentFund" />
+        </div>
+        <div class="form-group">
+          <label>Gross Salary</label>
+          <input type="text" class=" form-control" [(ngModel)]="Salary.grossSalary" />
+        </div>
+
+
+        <div class="form-group">
+          <label>Employee Name</label>
+          <select class=" form-control" [(ngModel)]="Salary.employeeId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let employee of EmployeeList" [ngValue]="employee.employeeId">
+              {{employee.fullName}}
+            </option>
+          </select>
+          <span class="text-danger" *ngIf="Salary.employeeError">{{Salary.employeeError }}</span>
+
+        </div>
+        <div class="form-group">
+          <label>Payroll Policy</label>
+          <select class=" form-control" [(ngModel)]="Salary.policyId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let policy of PayrollPolicyList" [ngValue]="policy.policyId">
+              {{policy.policyId}}
+            </option>
+          </select>
+          <span class="text-danger" *ngIf="Salary.countryError">{{Salary.payrollPolicyError }}</span>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
+        <button type="button" class="btn btn-primary" (click)="SubmitSalary()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="salaryModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="salaryModalLabel">Confirm delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span class="h2 text-warning">Delete {{Salary.fullName}}?</span>
+      </div>
+      <div class="modal-footer btn-group">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteSalary(Salary.salaryId)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

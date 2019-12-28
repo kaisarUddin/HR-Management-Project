@@ -1,0 +1,154 @@
+<h1 id="tableLabel">Leave Index</h1>
+
+
+
+<p *ngIf="!LeaveList"><em class="text-info">Loading...</em></p>
+
+
+<div class="btn-group">
+  <button class="btn btn-primary" (click)="LoadList()">
+    Refresh
+  </button>
+
+  <button type="button" data-toggle="modal" data-target="#leaveModal" class="btn btn-success">
+    Create New
+  </button>
+</div>
+
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="LeaveList">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Category</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Total Leave</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let l of LeaveList">
+      <td>{{ l.leaveId }}</td>
+      <td>{{ l.leaveCategory }}</td>
+      <td>{{ l.startDate }}</td>
+      <td>{{ l.endDate }}</td>
+      <td>{{ l.totalLeave }}</td>
+      <td>{{ l.status }}</td>
+      <td class="btn-group">
+        <button class="btn btn-primary" (click)="GetLeave(l.id)">Edit</button>
+        <button class="btn btn-danger" (click)="DeleteConfirmation(l)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="leaveModal" tabindex="-1" role="dialog" aria-labelledby="leaveModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="leaveModalLabel">Leave Entry</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" [(ngModel)]="Leave.leaveid" />
+        <div class="form-group">
+          <label>Leave Type</label>
+
+          <select class=" form-control" [(ngModel)]="Leave.leaveCategory" >
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option value="Medical">Medical</option>
+            <option value="Casual">Casual</option>
+            <option value="Maternity">Maternity</option>
+            <option value="Paternity">Paternity</option>
+            <option value="Special">Special</option>
+          </select>
+        
+        </div>
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="date" class=" form-control" [(ngModel)]="Leave.startDate" />
+        </div>
+
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="date" class=" form-control" [(ngModel)]="Leave.endDate" />
+        </div>
+
+
+        <div class="form-group">
+          <label>Total Leave</label>
+          <input type="number" class=" form-control" [(ngModel)]="Leave.totalLeave" />
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <input type="text" class=" form-control" [(ngModel)]="Leave.approvalStatus" />
+        </div>
+
+
+        <div class="form-group">
+          <label>Employee Name</label>
+          <select class=" form-control" [(ngModel)]="Leave.employeeId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let employee of EmployeeList" [ngValue]="employee.employeeId">
+              {{employee.fullName}}
+            </option>
+          </select>
+          <span class="text-danger" *ngIf="Person.countryError">{{Leave.employeeError }}</span>
+
+        </div>
+
+        <!--<div class="form-group">
+    <label>Country</label>
+
+    <div *ngFor="let country of CountryList">
+       <input type="radio" class=" " name="country" [(ngModel)]="Person.countryId" id="country{{country.countryId}}"  value="{{country.countryId}}"/>
+      <label for="country{{country.countryId}}">{{country.name}}</label>
+
+    </div>
+
+  </div>-->
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
+        <button type="button" class="btn btn-primary" (click)="SubmitLeave()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="leaveModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="leaveModalLabel">Confirm delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span class="h2 text-warning">Delete {{Leave.fullName}}?</span>
+      </div>
+      <div class="modal-footer btn-group">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteLeave(Leave.leaveId)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

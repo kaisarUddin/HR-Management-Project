@@ -1,0 +1,83 @@
+<h1 id="tableLabel">Department</h1>
+
+
+
+<p *ngIf="!DepartmentList"><em class="text-info">Loading...</em></p>
+
+<div class="btn-group">
+  <button class="btn btn-primary" (click)="LoadList()">
+    Refresh
+  </button>
+
+  <button type="button" data-toggle="modal" data-target="#departmentModal" class="btn btn-success">
+    Add New
+  </button>
+</div>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="DepartmentList">
+  <thead>
+    <tr>
+      <th>DepartmentId</th>
+      <th>DepartmentName</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let d of DepartmentList">
+      <td>{{ d.deptId }}</td>
+      <td>{{d.departmentName }}</td>
+
+      <td class="btn-group">
+        <button class="btn btn-primary" (click)="GetDepartment(d.deptId)">Edit</button>
+        <button class="btn btn-danger" (click)="DeleteConfirmation(d.departmentName)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="departmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="departmentModalLabel">New Department</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" [(ngModel)]="Department.deptId" />
+
+        <div class="form-group">
+          <label>DepartmentName</label>
+          <input type="text" class=" form-control" [(ngModel)]="Department.departmentName" />
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
+        <button type="button" class="btn btn-primary" (click)="SubmitDepartment()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="departmentModalLabel">Confirm delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span class="h2 text-warning">Delete {{Department.departmentName}}?</span>
+      </div>
+      <div class="modal-footer btn-group">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteDepartment(Department.deptId)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
