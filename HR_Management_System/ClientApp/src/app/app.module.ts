@@ -12,35 +12,44 @@ import { LeaveComponent } from './leave/leave.component';
 import { PayrollPolicyComponent } from './payrollPolicy/payrollPolicy.component';
 import { SalaryComponent } from './salary/salary.component';
 import { ShiftComponent } from './shift/shift.component';
-//import { AnnouncementComponent } from './announcement/announcement.component';
+import { AnnouncementComponent } from './announcement/announcement.component';
 import { DesignationComponent } from './designation/designation.component';
+import { ManagerComponent } from './manager/manager.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { ToastrModule } from 'ng6-toastr-notifications';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
+
 import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 
-@NgModule({
+@
+NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
     CounterComponent,
-        FetchDataComponent,
-        DesignationComponent,
-        DepartmentComponent,
-        LeaveComponent,
-        SalaryComponent,
+    FetchDataComponent,
+    DesignationComponent,
+    DepartmentComponent,
+    LeaveComponent,
+    SalaryComponent,
         ShiftComponent,
-        PayrollPolicyComponent
-       // AnnouncementComponent
+    ManagerComponent,
+    PayrollPolicyComponent,
+        AnnouncementComponent
     
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    ApiAuthorizationModule,
+      ApiAuthorizationModule,
+    BrowserAnimationsModule,
+      ToastrModule.forRoot(),
+
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
@@ -50,7 +59,8 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
         { path: 'payrollPolicy', component: PayrollPolicyComponent }, 
         { path: 'salary', component: SalaryComponent }, 
         { path: 'shift', component: ShiftComponent }, 
-       // { path: 'announcement', component: AnnouncementComponent }, 
+        { path: 'manager', component: ManagerComponent }, 
+        { path: 'announcement', component: AnnouncementComponent }, 
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
     ])
   ],

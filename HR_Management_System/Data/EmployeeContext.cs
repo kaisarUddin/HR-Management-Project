@@ -32,6 +32,7 @@ namespace HR_Management_System.Models
 
         }
         public DbSet<PayrollPolicy> PayrollPolicy { get; set; }
+        public DbSet<HR_Management_System.Models.Manager> Manager { get; set; }
 
 
 

@@ -6,11 +6,11 @@
 
 <div class="btn-group">
   <button class="btn btn-primary" (click)="LoadList()">
-    Refresh
+   <i class="fa fa-refresh"></i>
   </button>
 
   <button type="button" data-toggle="modal" data-target="#designationModal" class="btn btn-success">
-    Add New
+    <i class="fa fa-plus"></i>
   </button>
 </div>
 
@@ -28,8 +28,8 @@
       <td>{{d.designationName }}</td>
 
       <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetDesignation(d.desigId)">Edit</button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(d)">Delete</button>
+        <button class="btn btn-primary" (click)="GetDesignation(d.desigId)"> <i class="fa fa-edit"></i></button>
+        <button class="btn btn-danger" (click)="DeleteConfirmation(d)"><i class="fa fa-trash-o"></i></button>
       </td>
     </tr>
   </tbody>
@@ -38,7 +38,7 @@
 <!-- Modal -->
 <div class="modal fade" id="designationModal" tabindex="-1" role="dialog" aria-labelledby="designationModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content"  #form="ngForm" (ngSubmit)="form.form.valid && SubmitDesignation(form)" autocomplete="off">
       <div class="modal-header">
         <h5 class="modal-title" id="designationModalLabel">New Designation</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -50,15 +50,15 @@
 
         <div class="form-group">
           <label>Designation</label>
-          <input type="text" class=" form-control" [(ngModel)]="Designation.designationName" />
+          <input type="text" class=" form-control" name="designationName" #designationName="ngModel" [ngClass]="{'is-invalid':form.submitted && designationName.invalid }" [(ngModel)]="Designation.designationName" />
         </div>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="SubmitDesignation()">Save</button>
+        <button type="submit" class="btn btn-primary" >Save</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 

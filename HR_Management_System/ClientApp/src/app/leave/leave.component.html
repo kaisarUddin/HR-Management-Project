@@ -50,7 +50,7 @@
 <!-- Modal -->
 <div class="modal fade" id="leaveModal" tabindex="-1" role="dialog" aria-labelledby="leaveModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content"  #form="ngForm" (ngSubmit)="form.form.valid && SubmitLeave(form)" autocomplete="off" >
       <div class="modal-header">
         <h5 class="modal-title" id="leaveModalLabel">Leave Entry</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -61,9 +61,7 @@
         <input type="hidden" [(ngModel)]="Leave.leaveid" />
         <div class="form-group">
           <label>Leave Type</label>
-
-          <select class=" form-control" [(ngModel)]="Leave.leaveCategory" >
-
+          <select class=" form-control" name="leaveCategory" #leaveCategory="ngModel" [ngClass]="{'is-invalid':form.submitted && leaveCategory.invalid }" required="" [(ngModel)]="Leave.leaveCategory" >
             <option value="undefined">
               Please select Value
             </option>
@@ -77,29 +75,29 @@
         </div>
         <div class="form-group">
           <label>Start Date</label>
-          <input type="date" class=" form-control" [(ngModel)]="Leave.startDate" />
+          <input type="date" class=" form-control"  name="startDate" #startDate="ngModel" [ngClass]="{'is-invalid':form.submitted && startDate.invalid }" required="" [(ngModel)]="Leave.startDate" />
         </div>
 
         <div class="form-group">
           <label>End Date</label>
-          <input type="date" class=" form-control" [(ngModel)]="Leave.endDate" />
+          <input type="date" class=" form-control"  name="endDate" #endDate="ngModel" [ngClass]="{'is-invalid':form.submitted && endDate.invalid }" required="" [(ngModel)]="Leave.endDate" />
         </div>
 
 
         <div class="form-group">
           <label>Total Leave</label>
-          <input type="number" class=" form-control" [(ngModel)]="Leave.totalLeave" />
+          <input type="number" class=" form-control"  name="totalLeave" #totalLeave="ngModel" [ngClass]="{'is-invalid':form.submitted && totalLeave.invalid }" required="" [(ngModel)]="Leave.totalLeave" />
         </div>
 
         <div class="form-group">
           <label>Status</label>
-          <input type="text" class=" form-control" [(ngModel)]="Leave.approvalStatus" />
+          <input type="text" class=" form-control" name="approvalStatus" #approvalStatus="ngModel" [ngClass]="{'is-invalid':form.submitted && approvalStatus.invalid }" required="" [(ngModel)]="Leave.approvalStatus" />
         </div>
 
 
         <div class="form-group">
           <label>Employee Name</label>
-          <select class=" form-control" [(ngModel)]="Leave.employeeId">
+          <select class=" form-control" name="employeeId" #employeeId="ngModel" [ngClass]="{'is-invalid':form.submitted && employeeId.invalid }" required="" [(ngModel)]="Leave.employeeId">
 
             <option value="undefined">
               Please select Value
@@ -111,25 +109,12 @@
           <span class="text-danger" *ngIf="Person.countryError">{{Leave.employeeError }}</span>
 
         </div>
-
-        <!--<div class="form-group">
-    <label>Country</label>
-
-    <div *ngFor="let country of CountryList">
-       <input type="radio" class=" " name="country" [(ngModel)]="Person.countryId" id="country{{country.countryId}}"  value="{{country.countryId}}"/>
-      <label for="country{{country.countryId}}">{{country.name}}</label>
-
-    </div>
-
-  </div>-->
-
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="SubmitLeave()">Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 

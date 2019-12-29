@@ -33,7 +33,7 @@
 
       <td class="btn-group">
         <button class="btn btn-primary" (click)="GetShift(s.shiftId)">Edit</button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(d)">Delete</button>
+        <button class="btn btn-danger" (click)="DeleteConfirmation(s)">Delete</button>
       </td>
     </tr>
   </tbody>
@@ -42,7 +42,7 @@
 <!-- Modal -->
 <div class="modal fade" id="shiftModal" tabindex="-1" role="dialog" aria-labelledby="shiftModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content" #form="ngForm" (ngSubmit)="form.form.valid && SubmitShift(form)" autocomplete="off">
       <div class="modal-header">
         <h5 class="modal-title" id="shiftModalLabel">New Shift</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -54,34 +54,40 @@
 
         <div class="form-group">
           <label>Shift </label>
-          <input type="radio" class="" name="shift" [(ngModel)]="Shift.shiftName" value="Morning" />Morning
-          <input type="radio" class=" " name="shift" [(ngModel)]="Shift.shiftName" value="Evening" />Evening
-          <input type="radio" class=" " name="shift" [(ngModel)]="Shift.shiftName" value="Night" />Night
+          <select class=" form-control" name="shiftName" #shiftName="ngModel" [ngClass]="{'is-invalid':form.submitted && shiftName.invalid }" [(ngModel)]="Shift.shiftName"  required="">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option value="Morning">Morning</option>
+            <option value="Evening">Evening</option>
+            <option value="Night">Night</option>
+          </select>
 
         </div>
         <div class="form-group">
           <label>Start Time</label>
-          <input type="time" class=" form-control" [(ngModel)]="Shift.startTime" />
+          <input type="time" class=" form-control" name="startTime" #startTime="ngModel" [ngClass]="{'is-invalid':form.submitted && startTime.invalid }" [(ngModel)]="Shift.startTime"  required="" />
         </div>
         <div class="form-group">
           <label>End Time</label>
-          <input type="time" class=" form-control" [(ngModel)]="Shift.endTime" />
+          <input type="time" class=" form-control" name="endTime" #endTime="ngModel" [ngClass]="{'is-invalid':form.submitted && endTime.invalid }" [(ngModel)]="Shift.endTime"  required="" />
         </div>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="SubmitShift()">Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="shiftModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">Confirm delete</h5>
+        <h5 class="modal-title" id="shiftModalLabel">Confirm delete</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -91,7 +97,7 @@
       </div>
       <div class="modal-footer btn-group">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-        <button type="button" class="btn btn-primary" (click)="DeleteShift(Designation.desigId)">Yes</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteShift(Shift.shiftId)">Yes</button>
       </div>
     </div>
   </div>

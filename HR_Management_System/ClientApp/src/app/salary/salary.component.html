@@ -58,7 +58,7 @@
 <!-- Modal -->
 <div class="modal fade" id="salaryModal" tabindex="-1" role="dialog" aria-labelledby="salaryModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content"  #form="ngForm" (ngSubmit)="form.form.valid && SubmitSalary(form)" autocomplete="off">
       <div class="modal-header">
         <h5 class="modal-title" id="salaryModalLabel">New Person</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -67,49 +67,52 @@
       </div>
       <div class="modal-body">
         <input type="hidden" [(ngModel)]="Salary.salaryId" />
-
-
         <div class="form-group">
           <label>Salary Type</label>
-          <input type="radio" class="" name="salary" [(ngModel)]="Salary.salarytype" value="Hourly" />Hourly
-          <input type="radio" class="" name="salary" [(ngModel)]="Salary.salarytype" value="Monthly" />Monthly
-          <input type="radio" class="" name="salary" [(ngModel)]="Salary.salarytype" value="Yearly" />Yearly
+          <select class=" form-control" name="salarytype" #salarytype="ngModel" [ngClass]="{'is-invalid':form.submitted && salarytype.invalid }" required="" [(ngModel)]="Salary.salarytype">
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option value="Hourly">Hourly</option>
+            <option value="Monthly" >Monthly</option>
+            <option value="Yearly" >Yearly</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Basic</label>
-          <input type="number" class=" form-control" [(ngModel)]="Salary.basic" />
+          <input type="number" class=" form-control" name="basic" #basic="ngModel" [ngClass]="{'is-invalid':form.submitted && basic.invalid }" required="" [(ngModel)]="Salary.basic" />
         </div>
 
         <div class="form-group">
           <label>T/A</label>
-          <input type="number" class=" form-control" [(ngModel)]="Salary.transportAllowance" />
+          <input type="number" class=" form-control" name="transportAllowance" #transportAllowance="ngModel" [ngClass]="{'is-invalid':form.submitted && transportAllowance.invalid }" required="" [(ngModel)]="Salary.transportAllowance" />
         </div>
 
 
         <div class="form-group">
           <label>H/R</label>
-          <input type="number" class=" form-control" [(ngModel)]="Salary.houseRent" />
+          <input type="number" class=" form-control" name="basic" #basic="ngModel" [ngClass]="{'is-invalid':form.submitted && basic.invalid }" required="" [(ngModel)]="Salary.houseRent" />
         </div>
 
         <div class="form-group">
           <label>M/A</label>
-          <input type="number" class=" form-control" [(ngModel)]="Salary.medicalAllowance" />
+          <input type="number" class=" form-control" name="medicalAllowance" #medicalAllowance="ngModel" [ngClass]="{'is-invalid':form.submitted && medicalAllowance.invalid }" required="" [(ngModel)]="Salary.medicalAllowance" />
         </div>
         <div class="form-group">
           <label>F/A</label>
-          <input type="number" class=" form-control" [(ngModel)]="Salary.foodAllowance" />
+          <input type="number" class=" form-control" name="foodAllowance" #foodAllowance="ngModel" [ngClass]="{'is-invalid':form.submitted && foodAllowance.invalid }" required="" [(ngModel)]="Salary.foodAllowance" />
         </div>
         <div class="form-group">
           <label>Festival Bonus</label>
-          <input type="number" class=" form-control" [(ngModel)]="Salary.festivalBonus" />
+          <input type="number" class=" form-control" name="festivalBonus" #festivalBonus="ngModel" [ngClass]="{'is-invalid':form.submitted && festivalBonus.invalid }" required="" [(ngModel)]="Salary.festivalBonus" />
         </div>
         <div class="form-group">
           <label>P/F</label>
-          <input type="text" class=" form-control" [(ngModel)]="Salary.providentFund" />
+          <input type="text" class=" form-control" name="providentFund" #providentFund="ngModel" [ngClass]="{'is-invalid':form.submitted && providentFund.invalid }" required="" [(ngModel)]="Salary.providentFund" />
         </div>
         <div class="form-group">
           <label>Gross Salary</label>
-          <input type="text" class=" form-control" [(ngModel)]="Salary.grossSalary" />
+          <input type="text" class=" form-control" name="grossSalary" #grossSalary="ngModel" [ngClass]="{'is-invalid':form.submitted && grossSalary.invalid }" required="" [(ngModel)]="Salary.grossSalary" />
         </div>
 
 
@@ -145,9 +148,9 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="SubmitSalary()">Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 

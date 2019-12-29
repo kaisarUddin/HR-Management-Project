@@ -1,6 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isNullOrUndefined } from 'util';
+import { ToastrManager } from 'ng6-toastr-notifications';
+import { NgForm } from '@angular/forms';
 declare var $: any;
 @Component({
     selector: 'app-salary',
@@ -16,18 +18,19 @@ export class SalaryComponent {
 
     public Http: HttpClient;
     public BaseUrl: string;
+    public Toastr: ToastrManager;
     public Salary: Salary;
 
 
-    constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+    constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string, toastr: ToastrManager) {
 
         this.Http = http;
         this.BaseUrl = baseUrl;
-
+        this.Toastr = toastr;
 
 
         this.LoadList();
-
+        this.Toastr.successToastr("Data loaded successfully");
     }
 
     public LoadList() {
@@ -35,7 +38,7 @@ export class SalaryComponent {
         this.Http.get<Salary[]>(this.BaseUrl + 'api/SalaryApi')
             .subscribe(result => {
                 this.SalaryList = result;
-            }, error => console.error(error));
+            }, error => this.Toastr.errorToastr(error, "Error"));
         this.Cancel();
         this.LoadEmployeeList();
         this.LoadPayrollPolicyList();
@@ -43,18 +46,18 @@ export class SalaryComponent {
 
     public LoadEmployeeList() {
 
-        this.Http.get<Employee[]>(this.BaseUrl + 'api/SalaryApi')
+        this.Http.get<Employee[]>(this.BaseUrl + 'api/EmployeesApi')
             .subscribe(result => {
                 this.EmployeeList = result;
-            }, error => console.error(error));
+            }, error => this.Toastr.errorToastr(error, "Error"));
         this.Cancel();
     }
     public LoadPayrollPolicyList() {
 
-        this.Http.get<PayrollPolicy[]>(this.BaseUrl + 'api/SalaryApi')
+        this.Http.get<PayrollPolicy[]>(this.BaseUrl + 'api/PayrollPolicyApi')
             .subscribe(result => {
                 this.PayrollPolicyList = result;
-            }, error => console.error(error));
+            }, error => this.Toastr.errorToastr(error, "Error"));
         this.Cancel();
     }
 
@@ -65,68 +68,26 @@ export class SalaryComponent {
         this.Salary = new Salary();
     }
 
-    public SubmitSalary(): void {
-
-
-        if (!this.ValidateSalary()) return;
-        if (!this.ValidateSalaryPolicy()) return;
-
-
+    public SubmitSalary(form: NgForm): void {
         if (this.Salary.salaryId == 0) {
             this.Http.post<Salary>(this.BaseUrl + 'api/SalaryApi', this.Salary)
                 .subscribe(result => {
-                   // alert(result.fullName + ' create successfully');
                     this.LoadList();
+                    form.reset();
                     $('#salaryModal').modal('hide');
-                }, error => console.error(error));
+                    this.Toastr.successToastr("Data saved successfully");
+                }, error => this.Toastr.errorToastr(error, "Error"));
         }
         else {
             this.Http.put<Salary>(this.BaseUrl + 'api/LeavesApi/' + this.Salary.salaryId, this.Salary)
                 .subscribe(result => {
-                   // alert(result.fullName + ' updated successfully');
                     this.LoadList();
+                    form.reset();
                     $('#salaryModal').modal('hide');
-                }, error => console.error(error));
+                    this.Toastr.successToastr("Data updated successfully");
+                }, error => this.Toastr.errorToastr(error, "Error"));
         }
-
-
-
-
-
     }
-
-
-    public ValidateSalary(): boolean {
-        if (this.Salary.employeeId == 0 || isNullOrUndefined(this.Salary.employeeId)) {
-
-            this.Salary.employeeError = "Employee is not selected";
-            return false;
-        }
-        else {
-            this.Salary.employeeError = null;
-        }
-
-        //if (isNullOrUndefined(this.Leave.gender)) {
-
-        //    this.Leave.countryError = "Person gender is not selected";
-        //    return false;
-        //}
-
-        //return true;
-    }
-    public ValidateSalaryPolicy(): boolean {
-        if (this.Salary.policyId == 0 || isNullOrUndefined(this.Salary.policyId)) {
-
-            this.Salary.payrollPolicyError = "PayrollPolicy is not selected";
-            return false;
-        }
-        else {
-            this.Salary.payrollPolicyError = null;
-        }
-
-       
-    }
-
 
 
     public GetSalary(id: number) {
@@ -135,7 +96,7 @@ export class SalaryComponent {
             .subscribe(result => {
                 this.Salary = result;
                 $('#salaryModal').modal('show');
-            }, error => console.error(error));
+            }, error => this.Toastr.errorToastr(error, "Error"));
 
     }
 
@@ -156,7 +117,8 @@ export class SalaryComponent {
                 this.Salary = result;
                 this.LoadList();
                 $('#deleteModal').modal('hide');
-            }, error => console.error(error));
+                this.Toastr.successToastr("Data deleted successfully");
+            }, error => this.Toastr.errorToastr(error, "Error"));
 
     }
 }
@@ -166,11 +128,7 @@ class Salary {
     constructor() {
 
         this.salaryId = 0;
-        //this.firstName = '';
-        //this.lastName = '';
-        //this.fullName = '';
-        //this.gender = 'Male';
-        //this.address = '';
+       
 
     }
 
@@ -190,11 +148,6 @@ class Salary {
     public GrossSalary: number;
     public employeeError: string;
     public payrollPolicyError: string;
-
-
-
-
-
 }
 
 interface Employee {

@@ -38,7 +38,7 @@
       <td>{{p.pF }}</td>
 
       <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetPayrollPolicy(d.desigId)">Edit</button>
+        <button class="btn btn-primary" (click)="GetPayrollPolicy(p.policyId)">Edit</button>
         <button class="btn btn-danger" (click)="DeleteConfirmation(p)">Delete</button>
       </td>
     </tr>
@@ -48,7 +48,7 @@
 <!-- Modal -->
 <div class="modal fade" id="payrollPolicyModal" tabindex="-1" role="dialog" aria-labelledby="payrollPolicyModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content"  #form="ngForm" (ngSubmit)="form.form.valid && SubmitPayrollPolicy(form)" autocomplete="off">
       <div class="modal-header">
         <h5 class="modal-title" id="payrollPolicyModalLabel">New Payroll Entry</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -60,35 +60,35 @@
 
         <div class="form-group">
           <label>Transport Allowance</label>
-          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.tA" />
+          <input type="number" class=" form-control" name="tA" #tA="ngModel" [ngClass]="{'is-invalid':form.submitted && tA.invalid }" required="" [(ngModel)]="PayrollPolicy.tA" />
         </div>
         <div class="form-group">
           <label>House Rent</label>
-          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.hR" />
+          <input type="number" class=" form-control" name="hR" #hR="ngModel" [ngClass]="{'is-invalid':form.submitted && hR.invalid }" required="" [(ngModel)]="PayrollPolicy.hR" />
         </div>
         <div class="form-group">
           <label>Medical Allowance</label>
-          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.mA" />
+          <input type="number" class=" form-control" name="mA" #mA="ngModel" [ngClass]="{'is-invalid':form.submitted && mA.invalid }" required="" [(ngModel)]="PayrollPolicy.mA" />
         </div>
         <div class="form-group">
           <label>Food Allowance</label>
-          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.fA" />
+          <input type="number" class=" form-control" name="fA" #fA="ngModel" [ngClass]="{'is-invalid':form.submitted && fA.invalid }" required="" [(ngModel)]="PayrollPolicy.fA" />
         </div>
         <div class="form-group">
           <label>Festival Bonus</label>
-          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.fB" />
+          <input type="number" class=" form-control" name="fB" #fB="ngModel" [ngClass]="{'is-invalid':form.submitted && fB.invalid }" required="" [(ngModel)]="PayrollPolicy.fB" />
         </div>
         <div class="form-group">
           <label>Provident Fund</label>
-          <input type="text" class=" form-control" [(ngModel)]="PayrollPolicy.pF" />
+          <input type="number" class=" form-control" name="pF" #pF="ngModel" [ngClass]="{'is-invalid':form.submitted && pF.invalid }" required="" [(ngModel)]="PayrollPolicy.pF" />
         </div>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="SubmitPayrollPolicy()">Save</button>
+        <button type="submit" class="btn btn-primary" >Save</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 

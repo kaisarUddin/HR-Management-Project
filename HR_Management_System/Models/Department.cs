@@ -17,9 +17,9 @@ namespace HR_Management_System.Models
         [JsonPropertyName("deptId")]
         public int DeptId { get; set; }
 
-        //[ForeignKey("Manager")]
-        //public int ManagerId { get; set; }
-        //public virtual Manager Manager { get; set; }
+        [ForeignKey("Manager")]
+        public int ManagerId { get; set; }
+        public virtual Manager Manager { get; set; }
 
         [Required]
         [DisplayName("Department")]

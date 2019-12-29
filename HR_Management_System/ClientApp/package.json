@@ -29,7 +29,9 @@
     "oidc-client": "^1.9.0",
     "popper.js": "^1.14.3",
     "rxjs": "^6.4.0",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "font-awesome": "^4.7.0",
+    "ng6-toastr-notifications": "^1.0.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.800.6",

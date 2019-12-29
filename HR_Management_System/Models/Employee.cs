@@ -95,8 +95,6 @@ namespace HR_Management_System.Models
 
 
         public virtual ICollection<Training>  Trainings { get; set; }
-        //public virtual ICollection<Manager>  Managers { get; set; }
-        //public virtual ICollection<Department> Departments { get; set; }
         public virtual ICollection<Attendance> Attendances { get; set; }
         public virtual ICollection<Leave> Leaves { get; set; }
         public virtual ICollection<Remarks> Remarks { get; set; }

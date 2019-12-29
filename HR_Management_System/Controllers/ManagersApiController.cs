@@ -5,34 +5,33 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HR_Management_System;
 using HR_Management_System.Models;
 
-namespace HR_Management_System.ApiControllers
+namespace HR_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ManagerApiController : ControllerBase
+    public class ManagersApiController : ControllerBase
     {
         private readonly EmployeeContext _context;
 
-        public ManagerApiController(EmployeeContext context)
+        public ManagersApiController(EmployeeContext context)
         {
             _context = context;
         }
 
-        // GET: api/ManagerApi
+        // GET: api/ManagersApi
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Manager>>> GetManagers()
+        public async Task<ActionResult<IEnumerable<Manager>>> GetManager()
         {
-            return await _context.Managers.ToListAsync();
+            return await _context.Manager.ToListAsync();
         }
 
-        // GET: api/ManagerApi/5
+        // GET: api/ManagersApi/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Manager>> GetManager(int id)
         {
-            var manager = await _context.Managers.FindAsync(id);
+            var manager = await _context.Manager.FindAsync(id);
 
             if (manager == null)
             {
@@ -42,7 +41,9 @@ namespace HR_Management_System.ApiControllers
             return manager;
         }
 
-        // PUT: api/ManagerApi/5
+        // PUT: api/ManagersApi/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutManager(int id, Manager manager)
         {
@@ -72,27 +73,29 @@ namespace HR_Management_System.ApiControllers
             return NoContent();
         }
 
-        // POST: api/ManagerApi
+        // POST: api/ManagersApi
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<Manager>> PostManager(Manager manager)
         {
-            _context.Managers.Add(manager);
+            _context.Manager.Add(manager);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetManager", new { id = manager.ManagerId }, manager);
         }
 
-        // DELETE: api/ManagerApi/5
+        // DELETE: api/ManagersApi/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Manager>> DeleteManager(int id)
         {
-            var manager = await _context.Managers.FindAsync(id);
+            var manager = await _context.Manager.FindAsync(id);
             if (manager == null)
             {
                 return NotFound();
             }
 
-            _context.Managers.Remove(manager);
+            _context.Manager.Remove(manager);
             await _context.SaveChangesAsync();
 
             return manager;
@@ -100,7 +103,7 @@ namespace HR_Management_System.ApiControllers
 
         private bool ManagerExists(int id)
         {
-            return _context.Managers.Any(e => e.ManagerId == id);
+            return _context.Manager.Any(e => e.ManagerId == id);
         }
     }
 }

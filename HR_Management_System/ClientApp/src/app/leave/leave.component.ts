@@ -1,6 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isNullOrUndefined } from 'util';
+import { ToastrManager } from 'ng6-toastr-notifications';
+import { NgForm } from '@angular/forms';
 declare var $: any;
 @Component({
     selector: 'app-leave',
@@ -15,18 +17,17 @@ export class LeaveComponent {
 
     public Http: HttpClient;
     public BaseUrl: string;
+    public Toastr: ToastrManager;
     public Leave: Leave;
 
 
-    constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+    constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string, toastr: ToastrManager) {
 
         this.Http = http;
         this.BaseUrl = baseUrl;
-
-
-
+        this.Toastr = toastr;
         this.LoadList();
-
+        this.Toastr.successToastr("Data loaded successfully");
     }
 
     public LoadList() {
@@ -34,7 +35,7 @@ export class LeaveComponent {
         this.Http.get<Leave[]>(this.BaseUrl + 'api/LeavesApi')
             .subscribe(result => {
                 this.LeaveList = result;
-            }, error => console.error(error));
+            }, error => this.Toastr.errorToastr(error, "Error"));
         this.Cancel();
         this.LoadEmployeeList();
     }
@@ -44,7 +45,7 @@ export class LeaveComponent {
         this.Http.get<Employee[]>(this.BaseUrl + 'api/LeavesApi')
             .subscribe(result => {
                 this.EmployeeList = result;
-            }, error => console.error(error));
+            }, error => this.Toastr.errorToastr(error, "Error"));
         this.Cancel();
     }
 
@@ -54,56 +55,29 @@ export class LeaveComponent {
         this.Leave = new Leave();
     }
 
-    public SubmitLeave(): void {
-
-
-        if (!this.ValidateLeave()) return;
-
+    public SubmitLeave(form: NgForm): void {
 
         if (this.Leave.leaveId == 0) {
             this.Http.post<Leave>(this.BaseUrl + 'api/LeavesApi', this.Leave)
                 .subscribe(result => {
-                   // alert(result.fullName + ' create successfully');
+                  
                     this.LoadList();
+                    form.reset();
                     $('#leaveModal').modal('hide');
-                }, error => console.error(error));
+                    this.Toastr.successToastr("Data saved successfully");
+                }, error => this.Toastr.errorToastr(error, "Error"));
         }
         else {
             this.Http.put<Leave>(this.BaseUrl + 'api/LeavesApi/' + this.Leave.leaveId, this.Leave)
                 .subscribe(result => {
-                   // alert(result.fullName + ' updated successfully');
+                 
                     this.LoadList();
+                    form.reset();
                     $('#leaveModal').modal('hide');
-                }, error => console.error(error));
+                    this.Toastr.successToastr("Data updated successfully");
+                }, error => this.Toastr.errorToastr(error, "Error"));
         }
-
-
-
-
-
     }
-
-
-    public ValidateLeave(): boolean {
-        if (this.Leave.employeeId == 0 || isNullOrUndefined(this.Leave.employeeId)) {
-
-            this.Leave.employeeError = "Employee is not selected";
-            return false;
-        }
-        else {
-            this.Leave.employeeError = null;
-        }
-
-        //if (isNullOrUndefined(this.Leave.gender)) {
-
-        //    this.Leave.countryError = "Person gender is not selected";
-        //    return false;
-        //}
-
-        //return true;
-    }
-
-
 
     public GetLeave(id: number) {
 
@@ -111,7 +85,7 @@ export class LeaveComponent {
             .subscribe(result => {
                 this.Leave = result;
                 $('#leaveModal').modal('show');
-            }, error => console.error(error));
+            }, error => this.Toastr.errorToastr(error, "Error"));
 
     }
 
@@ -122,17 +96,13 @@ export class LeaveComponent {
 
     }
     public DeleteLeave(id: number) {
-
-
-
-
-
         this.Http.delete<Leave>(this.BaseUrl + 'api/LeavesApi/' + id)
             .subscribe(result => {
                 this.Leave = result;
                 this.LoadList();
                 $('#deleteModal').modal('hide');
-            }, error => console.error(error));
+                this.Toastr.successToastr("Data deleted successfully");
+            }, error => this.Toastr.errorToastr(error, "Error"));
 
     }
 }
@@ -142,16 +112,8 @@ class Leave {
     constructor() {
 
         this.leaveId = 0;
-        //this.firstName = '';
-        //this.lastName = '';
-        //this.fullName = '';
-        //this.gender = 'Male';
-        //this.address = '';
-
+       
     }
-
-
-
     public leaveId: number;
     public leaveCategory: string;
     public startDate: Date;
@@ -160,11 +122,6 @@ class Leave {
     public approvalStatus: string;
     public employeeId: number;
     public employeeError: string;
-
-
-
-
-
 }
 
 interface Employee {

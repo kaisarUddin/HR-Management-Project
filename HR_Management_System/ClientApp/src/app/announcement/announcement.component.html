@@ -1,64 +1,88 @@
-<h1 id="tableLabel">Designation</h1>
+<h1 id="tableLabel">Announcement</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
 
-<p *ngIf="!DesignationList"><em class="text-info">Loading...</em></p>
+<p *ngIf="!AnnouncementList"><em class="text-info">Loading...</em></p>
 
 <div class="btn-group">
   <button class="btn btn-primary" (click)="LoadList()">
-    Refresh
+    <i class="fa fa-refresh"></i>
   </button>
 
-  <button type="button" data-toggle="modal" data-target="#designationModal" class="btn btn-success">
-    Add New
+  <button type="button" data-toggle="modal" data-target="#announcementModal" class="btn btn-success">
+    <i class="fa fa-plus"></i>
   </button>
 </div>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="DesignationList">
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="AnnouncementList">
   <thead>
     <tr>
-      <th>Designation Id</th>
-      <th>Designation</th>
+      <th>Announcement Id</th>
+      <th>Title</th>
+      <th>PostedDate</th>
+      <th>Description</th>
       <th>Action</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let d of DesignationList">
-      <td>{{ d.desigId }}</td>
-      <td>{{d.designationName }}</td>
+    <tr *ngFor="let a of AnnouncementList">
+      <td>{{ a.announcementId }}</td>
+      <td>{{a.title }}</td>
+      <td>{{a.postedDate }}</td>
+      <td>{{a.description }}</td>
 
       <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetDesignation(d.desigId)">Edit</button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(d)">Delete</button>
+        <button class="btn btn-primary" (click)="GetAnnouncement(a.announcementId)"><i class="fa fa-edit"></i></button>
+        <button class="btn btn-danger" (click)="DeleteConfirmation(a)"><i class="fa fa-trash-o"></i></button>
       </td>
     </tr>
   </tbody>
 </table>
 
 <!-- Modal -->
-<div class="modal fade" id="designationModal" tabindex="-1" role="dialog" aria-labelledby="designationModalLabel" aria-hidden="true">
+<div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" aria-labelledby="announcementModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content" #form="ngForm" (ngSubmit)="form.form.valid && SubmitAnnouncement(form)" autocomplete="off">
       <div class="modal-header">
-        <h5 class="modal-title" id="designationModalLabel">New Designation</h5>
+        <h5 class="modal-title" id="announcementModalLabel">New Announcement</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <input type="hidden" [(ngModel)]="Designation.desigId" />
+        <input type="hidden" [(ngModel)]="Announcement.announcementId" />
 
         <div class="form-group">
-          <label>Designation</label>
-          <input type="text" class=" form-control" [(ngModel)]="Designation.designationName" />
+          <label>Title</label>
+          <input type="text" class=" form-control" name="title" #title="ngModel" [ngClass]="{'is-invalid':form.submitted && title.invalid }"   [(ngModel)]="Announcement.title" />
         </div>
+        <div class="form-group">
+          <label>PostedDate</label>
+          <input type="date" class=" form-control"  name="postedDate" #postedDate="ngModel" [ngClass]="{'is-invalid':form.submitted && postedDate.invalid }" [(ngModel)]="Announcement.postedDate" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" class=" form-control"  name="description" #description="ngModel" [ngClass]="{'is-invalid':form.submitted && description.invalid }" [(ngModel)]="Announcement.description" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Department</label>
+        <select class=" form-control"  name="departmentId" #departmentId="ngModel" [ngClass]="{'is-invalid':form.submitted && departmentId.invalid }" [(ngModel)]="Announcement.departmentId">
+
+          <option value="undefined">
+            Please select Value
+          </option>
+          <option *ngFor="let department of DepartmentList" [ngValue]="department.departmentId">
+            {{department.departmentName}}
+          </option>
+        </select>
+        <span class="text-danger" *ngIf="Announcement.departmenError">{{Announcement.departmenError }}</span>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="SubmitDesignation()">Save</button>
+        <button type="submit" class="btn btn-primary" >Save</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
@@ -72,11 +96,11 @@
         </button>
       </div>
       <div class="modal-body">
-        <span class="h2 text-warning">Delete {{Designation.designationName}}?</span>
+        <span class="h2 text-warning">Delete {{Announcement.title}}?</span>
       </div>
       <div class="modal-footer btn-group">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-        <button type="button" class="btn btn-primary" (click)="DeleteDesignation(Designation.desigId)">Yes</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteAnnouncement(Announcement.announcementId)">Yes</button>
       </div>
     </div>
   </div>
