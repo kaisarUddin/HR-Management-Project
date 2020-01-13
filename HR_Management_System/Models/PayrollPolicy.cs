@@ -13,6 +13,9 @@ namespace HR_Management_System.Models
         [JsonPropertyName("policyId")]
         public int PolicyId { get; set; }
 
+        [DisplayName("Policy Category")]
+        [JsonPropertyName("policyType")]
+        public string PolicyType { get; set; }
         //public string Remarks { get; set; }
 
         [DisplayName("Transport Allowance")]
@@ -35,6 +38,10 @@ namespace HR_Management_System.Models
         [DisplayName("Provident Fund")]
         [JsonPropertyName("pF")]
         public decimal PF { get; set; }
+        [JsonPropertyName("overTime")]
+        public int OverTime { get; set; }
+
+      
 
         public virtual ICollection<Salary> Salaries { get; set; }
     }

@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HR_Management_System;
+using HR_Management_System.Data;
 using HR_Management_System.Models;
 
-namespace HR_Management_System.ApiControllers
+namespace HR_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,14 +24,14 @@ namespace HR_Management_System.ApiControllers
 
         // GET: api/HolidayApi
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Holidays>>> GetHolidays()
+        public async Task<ActionResult<IEnumerable<Holiday>>> GetHolidays()
         {
             return await _context.Holidays.ToListAsync();
         }
 
         // GET: api/HolidayApi/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Holidays>> GetHolidays(int id)
+        public async Task<ActionResult<Holiday>> GetHolidays(int id)
         {
             var holidays = await _context.Holidays.FindAsync(id);
 
@@ -44,7 +45,7 @@ namespace HR_Management_System.ApiControllers
 
         // PUT: api/HolidayApi/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHolidays(int id, Holidays holidays)
+        public async Task<IActionResult> PutHolidays(int id, Holiday holidays)
         {
             if (id != holidays.HolidayId)
             {
@@ -74,7 +75,7 @@ namespace HR_Management_System.ApiControllers
 
         // POST: api/HolidayApi
         [HttpPost]
-        public async Task<ActionResult<Holidays>> PostHolidays(Holidays holidays)
+        public async Task<ActionResult<Holiday>> PostHolidays(Holiday holidays)
         {
             _context.Holidays.Add(holidays);
             await _context.SaveChangesAsync();
@@ -84,7 +85,7 @@ namespace HR_Management_System.ApiControllers
 
         // DELETE: api/HolidayApi/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Holidays>> DeleteHolidays(int id)
+        public async Task<ActionResult<Holiday>> DeleteHolidays(int id)
         {
             var holidays = await _context.Holidays.FindAsync(id);
             if (holidays == null)

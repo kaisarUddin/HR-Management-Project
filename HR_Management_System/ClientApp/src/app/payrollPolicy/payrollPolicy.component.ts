@@ -87,21 +87,25 @@ export class PayrollPolicyComponent {
 }
 class PayrollPolicy {
     policyId: number;
+    policyType:string;
     tA: number;
     hR: number;
     mA: number;
     fA: number;
     fB: number;
+  
     pF: number;
 
 
     constructor() {
         this.policyId = 0;
+        this.policyType = ' ';
         this.tA = 0;
         this.hR = 0;
         this.mA = 0;
         this.fA = 0;
         this.fB = 0;
+      
         this.pF = 0;
         
     }

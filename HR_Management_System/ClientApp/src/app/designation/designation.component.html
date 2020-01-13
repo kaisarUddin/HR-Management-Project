@@ -6,35 +6,38 @@
 
 <div class="btn-group">
   <button class="btn btn-primary" (click)="LoadList()">
-   <i class="fa fa-refresh"></i>
+    <i class="fa fa-refresh"></i>
   </button>
 
   <button type="button" data-toggle="modal" data-target="#designationModal" class="btn btn-success">
     <i class="fa fa-plus"></i>
   </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
 </div>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="DesignationList">
-  <thead>
-    <tr>
-      <th>Designation Id</th>
-      <th>Designation</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let d of DesignationList">
-      <td>{{ d.desigId }}</td>
-      <td>{{d.designationName }}</td>
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="DesignationList">
+    <thead>
+      <tr>
+        <th>Designation Id</th>
+        <th>Designation</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of DesignationList | paginate: {itemsPerPage: 5, currentPage: p}">
+        <td>{{ d.desigId }}</td>
+        <td>{{d.designationName }}</td>
 
-      <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetDesignation(d.desigId)"> <i class="fa fa-edit"></i></button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(d)"><i class="fa fa-trash-o"></i></button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetDesignation(d.desigId)"> <i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(d)"><i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
 <!-- Modal -->
 <div class="modal fade" id="designationModal" tabindex="-1" role="dialog" aria-labelledby="designationModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -46,7 +49,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <input type="hidden" [(ngModel)]="Designation.desigId" />
+        <input type="hidden" name="desigId" [(ngModel)]="Designation.desigId" />
 
         <div class="form-group">
           <label>Designation</label>

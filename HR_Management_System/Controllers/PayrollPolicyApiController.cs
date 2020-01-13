@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.Configuration.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HR_Management_System;
+using HR_Management_System.Data;
 using HR_Management_System.Models;
 
-namespace HR_Management_System.ApiControllers
+namespace HR_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -25,7 +26,16 @@ namespace HR_Management_System.ApiControllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PayrollPolicy>>> GetPayrollPolicy()
         {
-            return await _context.PayrollPolicy.ToListAsync();
+            var data = new List<PayrollPolicy>();
+            try
+            {
+                data = _context.PayrollPolicy.ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return data;
         }
 
         // GET: api/PayrollPolicyApi/5
@@ -43,6 +53,8 @@ namespace HR_Management_System.ApiControllers
         }
 
         // PUT: api/PayrollPolicyApi/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPayrollPolicy(int id, PayrollPolicy payrollPolicy)
         {
@@ -73,6 +85,8 @@ namespace HR_Management_System.ApiControllers
         }
 
         // POST: api/PayrollPolicyApi
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<PayrollPolicy>> PostPayrollPolicy(PayrollPolicy payrollPolicy)
         {

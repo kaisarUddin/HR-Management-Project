@@ -23,6 +23,7 @@ namespace HR_Management_System.Models
         public string ManagerName { get; set; }
 
         public virtual ICollection<Department> Departments { get; set; }
+        public virtual ICollection<Remarks> Remarks { get; set; }
 
 
     }

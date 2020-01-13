@@ -96,7 +96,7 @@ class Shift {
 
 
     constructor() {
-        this.shiftId = undefined;
+        this.shiftId = 0;
         this.shiftName = '';
         this.startTime = 0;
         this.endTime = 0;

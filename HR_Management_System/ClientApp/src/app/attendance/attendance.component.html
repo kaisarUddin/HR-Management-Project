@@ -1,0 +1,128 @@
+<h1 id="tableLabel">Attendance Index</h1>
+
+
+
+<p *ngIf="!AttendanceList"><em class="text-info">Loading...</em></p>
+
+
+<div class="btn-group">
+  <button class="btn btn-primary" (click)="LoadList()">
+    <i class="fa fa-refresh"></i>
+  </button>
+
+  <button type="button" data-toggle="modal" data-target="#attendanceModal" class="btn btn-success">
+    <i class="fa fa-plus"></i>
+  </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
+</div>
+
+
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="AttendanceList">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Punch In</th>
+        <th>Punch Out</th>
+        <th>Date</th>
+        <th> Active Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let a of AttendanceList | paginate: {itemsPerPage: 5, currentPage: p}">
+        <td>{{ a.attendanceId }}</td>
+        <td>{{ a.punchIn }}</td>
+        <td>{{ a.punchOut }}</td>
+        <td>{{ a.date }}</td>
+        <td>{{ a.active }}</td>
+        
+
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetAttendance(a.attendanceId)"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(a)"><i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
+
+<!-- Modal -->
+<div class="modal fade" id="attendanceModal" tabindex="-1" role="dialog" aria-labelledby="attendanceModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content"  #form="ngForm" (ngSubmit)="form.form.valid && SubmitAttendance(form)" autocomplete="off" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="attendanceModalLabel">Attendance Entry</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="attendanceId" [(ngModel)]="Attendance.attendanceId" />
+        <div class="form-group">
+          <label>Punch In</label>
+          <input type="time" class=" form-control" name="punchIn" #punchIn="ngModel" [ngClass]="{'is-invalid':form.submitted && punchIn.invalid }" required="" [(ngModel)]="Attendance.punchIn" />
+        
+        </div>
+        <div class="form-group">
+          <label>Punch Out</label>
+          <input type="time" class=" form-control"  name="punchOut" #punchOut="ngModel" [ngClass]="{'is-invalid':form.submitted && punchOut.invalid }" required="" [(ngModel)]="Attendance.punchOut" />
+        </div>
+
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" class=" form-control"  name="date" #date="ngModel" [ngClass]="{'is-invalid':form.submitted && date.invalid }" required="" [(ngModel)]="Attendance.date" />
+        </div>
+
+
+        <div class="form-group">
+          <label>Active Status</label>
+          <input type="checkbox" class=" form-control" name="active" #active="ngModel" [ngClass]="{'is-invalid':form.submitted && active.invalid }" required="" [(ngModel)]="Attendance.active" />
+      
+        </div>
+
+
+        <div class="form-group">
+          <label>Employee Name</label>
+          <select class=" form-control" name="employeeId" #employeeId="ngModel" [ngClass]="{'is-invalid':form.submitted && employeeId.invalid }" required="" [(ngModel)]="Attendance.employeeId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let employee of EmployeeList" [ngValue]="employee.employeeId">
+              {{employee.fullName}}
+            </option>
+          </select>
+          <span class="text-danger" *ngIf="Attendance.employeeError">{{Attendance.employeeError }}</span>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="leaveModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="leaveModalLabel">Confirm delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span class="h2 text-warning">Delete {{Attendance.fullName}}?</span>
+      </div>
+      <div class="modal-footer btn-group">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteAttendance(Attendance.attendanceId)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

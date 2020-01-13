@@ -1,0 +1,128 @@
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.9.1.js"></script>
+<script src="~/Scripts/jquery.signalR-2.4.1.js"></script>
+<script src="~/signalr/js"></script>
+
+
+<div class="container form-horizontal">
+    <div class="form-group row">
+        <label class="control-label col-lg-5" for="txtMessage">Message</label>
+        <input class="form-control  col-lg-7" id="txtMessage" placeholder="type message here..." />
+    </div>
+
+    <button class="btn btn-info " id="btnSend">Send</button>
+    <hr />
+    <dl id="dialog" class="bg-success "></dl>
+</div>
+
+<script>
+
+    var hub = $.connection.messenger;
+    var connected = false;
+    var username;
+
+    hub.client.receive = function (user, message) {
+        $('#dialog').append('<dt>' + user + '</dt>');
+        $('#dialog').append('<dd>' + message + '</dd>');
+    }
+
+    hub.client.receiveLog = function (messageList) {
+
+        $('#dialog').html(null);
+
+        $.each(messageList, function (idx, msg) {
+
+            $('#dialog').append(`<dt>${msg["Sender"]} <span class="text-right text-muted">${msg["Time"]}</span></dt>`);
+            //$('#dialog').append('<dt>' + msg["Sender"] + '</dt>');
+            $('#dialog').append(`<dd >${msg["Content"]}</dd>`);
+
+        })
+
+
+
+    }
+
+
+    $('#btnSend').click(function () {
+        if (connected) {
+
+            var msg = $('#txtMessage').val();
+            $('#txtMessage').val(null);
+            hub.server.sendMessage(username, msg);
+
+        }
+    });
+
+
+    $.connection.hub.start().done(function () {
+        connected = true;
+        username = prompt("Enter your name");
+
+        hub.server.getLog();
+    });
+
+
+
+</script>
+
+------HUB---
+public class Messenger : Hub
+    {
+        private MessageContext db = new MessageContext();
+
+        public void GetLog()
+        {
+            List<Log> logData = db.Logs.ToList();
+            Clients.Caller.ReceiveLog(logData);
+        }
+
+        public void SendMessage(string user, string message)
+        {
+            
+            Log log = new Log()
+            {
+                Sender = user,
+                Content = message
+            };
+
+            db.Logs.Add(log);
+            db.SaveChanges(); 
+            
+
+            Clients.All.Receive(user, message);
+        }
+    }
+
+-----Model-----
+public class Log
+    {
+        public int Id { get; set; }
+
+        public string Sender { get; set; }
+        public string Content { get; set; }
+        public DateTime Time { get; set; } = DateTime.Now;
+
+    }
+
+
+    public class MessageContext:DbContext
+    {
+        public DbSet<Log> Logs { get; set; }        
+
+        public MessageContext():base("LogContext")
+        {
+        }
+    }
+--------AppStart---
+  public class Startup
+    {
+        public void Configuration(IAppBuilder app)
+        {
+            app.MapSignalR("/signalr",new HubConfiguration()
+            {
+                EnableJSONP = true,
+                EnableDetailedErrors = true
+            });
+            app.UseCors(CorsOptions.AllowAll);
+        }
+    }

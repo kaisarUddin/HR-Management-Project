@@ -22,10 +22,10 @@ namespace HR_Management_System.Models
        [DataType(DataType.Date)]
         public string PostedDate { get; set; }
 
-        [JsonPropertyName("departmentId")]
+        [JsonPropertyName("deptId")]
        [ForeignKey("Department")] 
        
-        public int? DepartmentId { get; set; }
+        public int? DeptId { get; set; }
         public virtual Department Department { get; set; }
         [JsonPropertyName("description")]
 

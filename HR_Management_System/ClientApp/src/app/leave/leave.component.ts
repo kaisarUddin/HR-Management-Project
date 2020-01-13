@@ -42,7 +42,7 @@ export class LeaveComponent {
 
     public LoadEmployeeList() {
 
-        this.Http.get<Employee[]>(this.BaseUrl + 'api/LeavesApi')
+        this.Http.get<Employee[]>(this.BaseUrl + 'api/EmployeesApi')
             .subscribe(result => {
                 this.EmployeeList = result;
             }, error => this.Toastr.errorToastr(error, "Error"));

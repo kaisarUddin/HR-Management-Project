@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace HR_Management_System.Models
@@ -14,47 +15,58 @@ namespace HR_Management_System.Models
 
         #region Properties
         [Key]
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DisplayName("Id")]
+        [JsonPropertyName("employeeId")]
         public int EmployeeId { get; set; }
         [Required]
         [DisplayName("First Name")]
+        [JsonPropertyName("firstName")]
         public string FirstName { get; set; }
         [Required]
         [DisplayName("Last Name")]
+        [JsonPropertyName("lastName")]
         public string LastName { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [DisplayName("Full Name")]
+        [JsonPropertyName("fullName")]
         public string FullName => FirstName + ' ' + LastName;
 
         [Required]
         [DisplayName("Gender")]
-        public Gender Gender { get; set; }
+        [JsonPropertyName("gender")]
+        public string Gender { get; set; }
         [Required]
         [DisplayName("Address")]
         [DataType(DataType.MultilineText)]
         [StringLength(250)]
+        [JsonPropertyName("address")]
         public string Address { get; set; }
         [Required]
         [DisplayName("Blood Group")]
+        [JsonPropertyName("bloodGroup")]
         public string BloodGroup { get; set; }
 
         [Required]
         [DisplayName("Marital Status")]
-        public MaritalStatus MaritalStatus { get; set; }
+        [JsonPropertyName("maritalStatus")]
+        public string MaritalStatus { get; set; }
        
         [Required]
         [StringLength(15)]
         [DataType(DataType.PhoneNumber)]
         [DisplayName("Mobile")]
+        [JsonPropertyName("mobileNo")]
         public string MobileNo { get; set; }
         //[DataType(DataType.EmailAddress)]
         [EmailAddress]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
 
         [DisplayName("Photo")]
-        [DataType(DataType.ImageUrl)]
+        //[DataType(DataType.ImageUrl)]
         [ScaffoldColumn(false)]
+        [JsonPropertyName("profilePicture")]
         public string ProfilePicture{ get; set; }
 
         
@@ -66,26 +78,28 @@ namespace HR_Management_System.Models
 
         #region ForeignKeys
         [ForeignKey("Department")]
+        [JsonPropertyName("deptId")]
         public int DeptId { get; set; }
         public virtual Department Department { get; set; }
+        [ForeignKey("Enlistment")]
+        [JsonPropertyName("enlistmentId")]
+        public int EnlistmentId { get; set; }
+        public virtual Enlistment Enlistment { get; set; }
 
-        [ForeignKey("Company")]
-        public int CompanyId { get; set; }
-        public virtual Company Company { get; set; }
 
         [ForeignKey("Jobs")]
+        [JsonPropertyName("jobId")]
         public int JobId { get; set; }
-        public virtual Jobs Jobs { get; set; }
+        public virtual Job Jobs { get; set; }
         [ForeignKey("Designation")]
+        [JsonPropertyName("desigId")]
         public int DesigId { get; set; }
         public virtual Designation Designation { get; set; }
 
 
-        [ForeignKey("Enlistment")]
-        public int EnlistmentId { get; set; }
-        public virtual Enlistment Enlistment { get; set; }
 
         [ForeignKey("Shift")]
+        [JsonPropertyName("shiftId")]
         public int ShiftId { get; set; }
         public virtual Shift Shift { get; set; }
 
@@ -99,14 +113,10 @@ namespace HR_Management_System.Models
         public virtual ICollection<Leave> Leaves { get; set; }
         public virtual ICollection<Remarks> Remarks { get; set; }
         public virtual ICollection<Salary> Salaries { get; set; }
-
-
-
-
-
+        
+       
 
         #endregion
     }
-    public enum Gender { Male, Female }
-    public enum MaritalStatus { Single, Married, Divorced }
+  
 }

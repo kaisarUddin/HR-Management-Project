@@ -7,44 +7,47 @@
 
 <div class="btn-group">
   <button class="btn btn-primary" (click)="LoadList()">
-    Refresh
+  <i class="fa fa-refresh"></i>
   </button>
 
   <button type="button" data-toggle="modal" data-target="#leaveModal" class="btn btn-success">
-    Create New
+    <i class="fa fa-plus"></i>
   </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
 </div>
 
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="LeaveList">
-  <thead>
-    <tr>
-      <th>Id</th>
-      <th>Category</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th>Total Leave</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let l of LeaveList">
-      <td>{{ l.leaveId }}</td>
-      <td>{{ l.leaveCategory }}</td>
-      <td>{{ l.startDate }}</td>
-      <td>{{ l.endDate }}</td>
-      <td>{{ l.totalLeave }}</td>
-      <td>{{ l.status }}</td>
-      <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetLeave(l.id)">Edit</button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(l)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="LeaveList">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Category</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Total Leave</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let l of LeaveList | paginate: {itemsPerPage: 5, currentPage: p}">
+        <td>{{ l.leaveId }}</td>
+        <td>{{ l.leaveCategory }}</td>
+        <td>{{ l.startDate }}</td>
+        <td>{{ l.endDate }}</td>
+        <td>{{ l.totalLeave }}</td>
+        <td>{{ l.approvalStatus }}</td>
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetLeave(l.leaveId)"> <i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(l)"> <i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
 
 
 <!-- Modal -->
@@ -58,7 +61,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <input type="hidden" [(ngModel)]="Leave.leaveid" />
+        <input type="hidden" name="leaveId" [(ngModel)]="Leave.leaveId" />
         <div class="form-group">
           <label>Leave Type</label>
           <select class=" form-control" name="leaveCategory" #leaveCategory="ngModel" [ngClass]="{'is-invalid':form.submitted && leaveCategory.invalid }" required="" [(ngModel)]="Leave.leaveCategory" >
@@ -91,7 +94,14 @@
 
         <div class="form-group">
           <label>Status</label>
-          <input type="text" class=" form-control" name="approvalStatus" #approvalStatus="ngModel" [ngClass]="{'is-invalid':form.submitted && approvalStatus.invalid }" required="" [(ngModel)]="Leave.approvalStatus" />
+          <select class=" form-control" name="approvalStatus" #approvalStatus="ngModel" [ngClass]="{'is-invalid':form.submitted && approvalStatus.invalid }" required="" [(ngModel)]="Leave.approvalStatus" >
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option value="Approved">Approved</option>
+            <option value="Not Approved">Not Approved</option>
+          </select>
+        
         </div>
 
 
@@ -106,7 +116,7 @@
               {{employee.fullName}}
             </option>
           </select>
-          <span class="text-danger" *ngIf="Person.countryError">{{Leave.employeeError }}</span>
+          <span class="text-danger" *ngIf="Leave.employeeError">{{Leave.employeeError }}</span>
 
         </div>
       </div>

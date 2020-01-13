@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HR_Management_System;
+using HR_Management_System.Data;
 using HR_Management_System.Models;
 
-namespace HR_Management_System.ApiControllers
+namespace HR_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,9 +24,19 @@ namespace HR_Management_System.ApiControllers
 
         // GET: api/RemarksApi
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Remarks>>> GetRemarks()
+        public async Task<ActionResult<IEnumerable<Object>>> GetRemarks()
         {
-            return await _context.Remarks.ToListAsync();
+            try
+            {
+               var data= _context.Remarks.Select(r=>new{remarkId=r.RemarkId,employeeId=r.Employee.EmployeeId,fullName=r.Employee.FullName,comments=r.Comments,remarksBy=r.Manager.ManagerName}).ToList();
+                return data;
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e);
+                return null;
+            }
         }
 
         // GET: api/RemarksApi/5

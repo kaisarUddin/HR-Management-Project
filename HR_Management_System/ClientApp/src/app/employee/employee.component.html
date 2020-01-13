@@ -1,0 +1,251 @@
+<h1 id="tableLabel">Employee Index</h1>
+
+
+
+<p *ngIf="!EmployeeList"><em class="text-info">Loading...</em></p>
+
+
+<div class="btn-group">
+  <button class="btn btn-primary" (click)="LoadList()">
+  <i class="fa fa-refresh"></i>
+  </button>
+
+  <button type="button" data-toggle="modal" data-target="#employeeModal" class="btn btn-success">
+   <i class="fa fa-plus"></i>
+  </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
+</div>
+
+
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="EmployeeList">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Designation</th>
+        <th>Department</th>
+        <th>Shift</th>
+        <th>Address</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Joining</th>
+        <th>Gender</th>
+        <th>Blood Group</th>
+        <th>Marital Status</th>
+        <th>Photo</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of EmployeeList | paginate: {itemsPerPage: 5, currentPage: p}">
+        <td>{{ e.employeeId }}</td>
+        <td>{{ e.fullName }}</td>
+        <td>{{ e.designationName }}</td>
+        <td>{{ e.departmentName }}</td>
+        <td>{{ e.shiftName }}</td>
+        <td>{{ e.address }}</td>
+        <td>{{ e.mobileNo }}</td>
+        <td>{{ e.email }}</td>
+        <td>{{ e.joinDate }}</td>
+        <td>{{ e.gender }}</td>
+        <td>{{ e.bloodGroup }}</td>
+        <td>{{ e.maritalStatus }}</td>
+        <td class="img-thumbnail mb-3 " >
+            <img [src]="e.profilePicture" alt="{{e.profilePicture}}" width="200" height="200" class="text-center" style="margin: 0  auto" />
+        </td>
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetEmployee(e.employeeId)"> <i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(e)"> <i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
+
+
+<!-- Modal -->
+<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <form class="modal-content" #form="ngForm" (ngSubmit)="form.form.valid && SubmitEmployee(form)" autocomplete="off" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="employeeModalLabel">Employee Entry</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="employeeId" [(ngModel)]="Employee.employeeId" />
+
+        <div class="row">
+          <div class="form-group col-6">
+            <label>First Name</label>
+            <input type="text" class=" form-control" name="firstName" #firstName="ngModel" [ngClass]="{'is-invalid':form.submitted && firstName.invalid }" [(ngModel)]="Employee.firstName" required="" />
+          </div>
+          <div class="form-group col-6">
+            <label>Last Name</label>
+            <input type="text" class=" form-control" name="lastName" #lastName="ngModel" [ngClass]="{'is-invalid':form.submitted && lastName.invalid }" [(ngModel)]="Employee.lastName" required="" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Address</label>
+            <textarea type="text" class=" form-control" name="address" #address="ngModel" [ngClass]="{'is-invalid':form.submitted && address.invalid }" [(ngModel)]="Employee.address"  ></textarea>
+          </div>
+          <div class="form-group col-6">
+            <label>Mobile</label>
+            <input type="tel" class=" form-control" name="mobileNo" #mobileNo="ngModel" [ngClass]="{'is-invalid':form.submitted && mobileNo.invalid }" [(ngModel)]="Employee.mobileNo" required="" />
+          </div>
+        </div>
+
+
+
+
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Email</label>
+            <input type="email" class=" form-control" name="email" #email="ngModel" [ngClass]="{'is-invalid':form.submitted && email.invalid }" [(ngModel)]="Employee.email" />
+          </div>
+          <div class="form-group col-6">
+            <label>Blood Group</label>
+            <input type="text" class=" form-control" name="bloodGroup" #bloodGroup="ngModel" [ngClass]="{'is-invalid':form.submitted && bloodGroup.invalid }" [(ngModel)]="Employee.bloodGroup" required="" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Gender</label>
+            <select class=" form-control" name="gender" #gender="ngModel" [ngClass]="{'is-invalid':form.submitted && gender.invalid }" required="" [(ngModel)]="Employee.gender">
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div class="form-group col-6">
+            <label>Marital Status</label>
+            <select class=" form-control" name="maritalStatus" #maritalStatus="ngModel" [ngClass]="{'is-invalid':form.submitted && maritalStatus.invalid }" required="" [(ngModel)]="Employee.maritalStatus">
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option value="Married">Married</option>
+              <option value="Single">Single</option>
+              <option value="Divorced">Divorced</option>
+            </select>
+          </div>
+        </div>
+
+      <div class="form-group">
+        <figure>
+          <div class="img-thumbnail mb-3 " *ngIf="photoPreview">
+            <img [src]="photoPreview" width="300" class="text-center" style="margin: 0  auto" />
+          </div>
+          <figcaption>
+            <label>Photo</label>
+            <input type="file" class=" form-control" [(ngModel)]="Employee.upload" name="upload"
+                   #upload="ngModel" (change)="onFileChanged($event)" />
+          </figcaption>
+        </figure>
+      </div>
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Department</label>
+            <select class=" form-control" name="deptId" #deptId="ngModel" [ngClass]="{'is-invalid':form.submitted && deptId.invalid }" required="" [(ngModel)]="Employee.deptId">
+
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option *ngFor="let d of DepartmentList" [ngValue]="d.deptId">
+                {{d.departmentName}}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="Employee.departmentError">{{Employee.departmentError }}</span>
+          </div>
+          <div class="form-group col-6">
+            <label>Designation</label>
+            <select class=" form-control" name="desigId" #desigId="ngModel" [ngClass]="{'is-invalid':form.submitted && desigId.invalid }" required="" [(ngModel)]="Employee.desigId">
+
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option *ngFor="let designation of DesignationList" [ngValue]="designation.desigId">
+                {{designation.designationName}}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="Employee.designationError">{{Employee.designationError }}</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Job</label>
+            <select class=" form-control" name="jobId" #jobId="ngModel" [ngClass]="{'is-invalid':form.submitted && jobId.invalid }" required="" [(ngModel)]="Employee.jobId">
+
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option *ngFor="let job of JobList" [ngValue]="job.jobId">
+                {{job.jobTitle}}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="Employee.jobError">{{Employee.jobError }}</span>
+          </div>
+          <div class="form-group col-6">
+            <label>Shift</label>
+            <select class=" form-control" name="shiftId" #shiftId="ngModel" [ngClass]="{'is-invalid':form.submitted && shiftId.invalid }" required="" [(ngModel)]="Employee.shiftId">
+
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option *ngFor="let shift of ShiftList" [ngValue]="shift.shiftId">
+                {{shift.shiftName}}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="Employee.shiftError">{{Employee.shiftError }}</span>
+          </div>
+        </div>
+        <div class="form-group ">
+          <label>Enlistment</label>
+          <select class=" form-control" name="enlistmentId" #enlistmentId="ngModel" [ngClass]="{'is-invalid':form.submitted && enlistmentId.invalid }" required="" [(ngModel)]="Employee.enlistmentId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let enlistment of EnlistmentList" [ngValue]="enlistment.enlistmentId">
+              {{enlistment.joinDate}}
+            </option>
+          </select>
+         
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="employeeModalLabel">Confirm delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span class="h2 text-warning">Delete {{Employee.fullName}}?</span>
+      </div>
+      <div class="modal-footer btn-group">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteEmployee(Employee.employeeId)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

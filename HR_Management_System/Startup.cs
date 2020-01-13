@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using HR_Management_System.Data;
 using HR_Management_System.Models;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,8 +28,11 @@ namespace HR_Management_System
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<EmployeeContext>(options =>
-               options.UseSqlServer(
-                   Configuration.GetConnectionString("DefaultConnection")));
+                {
+                    //options.UseLazyLoadingProxies();
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection"));
+                });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -43,6 +47,17 @@ namespace HR_Management_System
             services.AddAuthentication()
                 .AddIdentityServerJwt();
             services.AddControllersWithViews();
+
+            //services.Configure<FormOptions>(o =>
+            //{
+            //    o.ValueLengthLimit = int.MaxValue;
+            //    o.KeyLengthLimit = int.MaxValue;
+            //    o.ValueCountLimit = int.MaxValue;
+            //    o.MultipartBodyLengthLimit = long.MaxValue;
+            //    o.MemoryBufferThreshold = int.MaxValue;
+            //});
+
+
             services.AddRazorPages();
            
             services.AddSpaStaticFiles(configuration =>

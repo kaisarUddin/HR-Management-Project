@@ -26,7 +26,7 @@ export class AnnouncementComponent {
       this.Toastr.successToastr("Data loaded successfully");
   }
     public LoadList() {
-        this.Http.get<Announcement[]>(this.BaseUrl ).subscribe(result => {
+        this.Http.get<Announcement[]>(this.BaseUrl + 'api/AnnouncementApi' ).subscribe(result => {
             this.AnnouncementList = result;
         }, error =>  error => this.Toastr.errorToastr(error, "Error"));
         this.Cancel();
@@ -34,7 +34,7 @@ export class AnnouncementComponent {
     }
     public LoadDepartmentList() {
 
-        this.Http.get<[Department]>(this.BaseUrl + 'api /DepartmentApi')
+        this.Http.get<Department[]>(this.BaseUrl + 'api/DepartmentApi')
             .subscribe(result => {
                 this.DepartmentList = result;
             }, error =>  error => this.Toastr.errorToastr(error, "Error"));
@@ -48,7 +48,7 @@ export class AnnouncementComponent {
     public SubmitAnnouncement(form: NgForm): void {
 
         if (this.Announcement.announcementId == 0) {
-            this.Http.post<Announcement>(this.BaseUrl + 'api /AnnouncementApi', this.Announcement)
+            this.Http.post<Announcement>(this.BaseUrl + 'api/AnnouncementApi', this.Announcement)
                 .subscribe(result => {
                     this.LoadList();
                     form.reset();
@@ -57,7 +57,7 @@ export class AnnouncementComponent {
                 }, error =>  error => this.Toastr.errorToastr(error, "Error"));
         }
         else {
-            this.Http.put<Announcement>(this.BaseUrl + 'api /AnnouncementApi'+ this.Announcement.announcementId, this.Announcement)
+            this.Http.put<Announcement>(this.BaseUrl + 'api/AnnouncementApi'+ this.Announcement.announcementId, this.Announcement)
                 .subscribe(result => {
                     this.LoadList();
                     form.reset();
@@ -69,7 +69,7 @@ export class AnnouncementComponent {
     }
     public GetAnnouncement(id: number) {
 
-        this.Http.get<Announcement>(this.BaseUrl + 'api /AnnouncementApi' + id)
+        this.Http.get<Announcement>(this.BaseUrl + 'api/AnnouncementApi' + id)
             .subscribe(result => {
                 this.Announcement = result;
                 $('#announcementModal').modal('show');
@@ -85,7 +85,7 @@ export class AnnouncementComponent {
     }
     public DeleteAnnouncement(id: number) {
 
-        this.Http.delete<Announcement>(this.BaseUrl + 'api /AnnouncementApi' + id)
+        this.Http.delete<Announcement>(this.BaseUrl + 'api/AnnouncementApi' + id)
             .subscribe(result => {
                 this.Announcement = result;
                 this.LoadList();
@@ -105,8 +105,8 @@ class Announcement {
     title: string;
     postedDate: Date;
     description: string;
-    departmentId: number;
-    departmenError: string;
+    deptId: number;
+    departmentError: string;
 
 
     constructor() {
@@ -115,6 +115,7 @@ class Announcement {
     }
 }
 interface Department {
-    departmentId: number;
+    deptId: number;
     departmentName: string;
+    
 }

@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace HR_Management_System.Models
 {
@@ -18,8 +19,8 @@ namespace HR_Management_System.Models
         public int SalaryId { get; set; }
 
         [DataType(DataType.Currency)]
-        [DisplayName("Basic")]
-        [JsonPropertyName("Employee Id")]
+        [DisplayName("Employee")]
+        [JsonPropertyName("employeeId")]
         [ForeignKey("Employee")]
         public int EmployeeId { get; set; }
         public virtual Employee Employees { get; set; }
@@ -33,10 +34,10 @@ namespace HR_Management_System.Models
 
         [JsonPropertyName("policyId")]
         [DisplayName("Policy Id")]
-        [ForeignKey("PayrollPolicy")]
+       
         public int PolicyId { get; set; }
 
-        public virtual PayrollPolicy PayrollPolicy { get; set; }
+     
 
 
 
@@ -47,8 +48,12 @@ namespace HR_Management_System.Models
         public decimal TransportAllowance
         {
             get
-            {
-                return Basic * PayrollPolicy.MA / 100M;
+             {
+                if (PayrollPolicy!=null)
+                {
+                   return Basic* PayrollPolicy.TA  / 100M;
+                }
+                return 0;
             }
 
         }
@@ -60,7 +65,11 @@ namespace HR_Management_System.Models
         {
             get
             {
-                return Basic * PayrollPolicy.HR / 100M;
+                if (PayrollPolicy != null)
+                {
+                    return Basic * PayrollPolicy.HR / 100M;
+                }
+                return 0;
             }
 
         }
@@ -71,7 +80,11 @@ namespace HR_Management_System.Models
         {
             get
             {
-                return Basic * PayrollPolicy.MA / 100M;
+                if (PayrollPolicy != null)
+                {
+                    return Basic * PayrollPolicy.MA / 100M;
+                }
+                return 0;
             }
 
         }
@@ -83,7 +96,11 @@ namespace HR_Management_System.Models
         {
             get
             {
-                return Basic * PayrollPolicy.FA / 100M;
+                if (PayrollPolicy != null)
+                {
+                    return Basic * PayrollPolicy.FA / 100M;
+                }
+                return 0;
             }
 
         }
@@ -97,7 +114,11 @@ namespace HR_Management_System.Models
         {
             get
             {
-                return Basic * PayrollPolicy.FB / 100M;
+                if (PayrollPolicy != null)
+                {
+                    return Basic * PayrollPolicy.FB / 100M;
+                }
+                return 0;
             }
         }
 
@@ -108,7 +129,43 @@ namespace HR_Management_System.Models
         {
             get
             {
-                return Basic * PayrollPolicy.PF;
+                if (PayrollPolicy != null)
+                {
+                    return Basic * PayrollPolicy.PF / 100M;
+                }
+                return 0;
+            }
+
+        }
+
+        [JsonPropertyName("overTime")]
+        [DisplayName("Over Time")]
+        public int OverTime { get; set; }
+        [JsonPropertyName("oTRate")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public decimal OTRate
+        {
+            get { return OverTime * 500; }
+
+        }
+
+        [ForeignKey("Leave")]
+        [JsonPropertyName("leaveId")]
+        public int LeaveId { get; set; }
+        public virtual Leave Leave { get; set; }
+
+      
+        [JsonPropertyName("leaveFine")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public decimal LeaveFine
+        {
+            get
+            {
+                if (Leave != null)
+                {
+                    return Leave.TotalLeave * 1000;
+                }
+                return 0;
             }
 
         }
@@ -121,14 +178,11 @@ namespace HR_Management_System.Models
         {
             get
             {
-                return Basic + TransportAllowance + FestivalBonus + HouseRent + MedicalAllowance+FoodAllowance-ProvidentFund;
+                return Basic + TransportAllowance + FestivalBonus + HouseRent + MedicalAllowance+FoodAllowance+ OTRate - ProvidentFund- LeaveFine;
             }
 
         }
-    
-
-
-      
-
+        [ForeignKey("PolicyId")]
+        public virtual PayrollPolicy PayrollPolicy { get; set; }
     }
 }

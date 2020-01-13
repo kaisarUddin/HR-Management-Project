@@ -1,64 +1,101 @@
-<h1 id="tableLabel">Department</h1>
+<h1 id="tableLabel">Department Index</h1>
 
 
 
 <p *ngIf="!DepartmentList"><em class="text-info">Loading...</em></p>
 
+
 <div class="btn-group">
   <button class="btn btn-primary" (click)="LoadList()">
-    Refresh
+   <i class="fa fa-refresh"></i>
   </button>
 
   <button type="button" data-toggle="modal" data-target="#departmentModal" class="btn btn-success">
-    Add New
+    <i class="fa fa-plus"></i>
   </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
 </div>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="DepartmentList">
-  <thead>
-    <tr>
-      <th>DepartmentId</th>
-      <th>DepartmentName</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let d of DepartmentList">
-      <td>{{ d.deptId }}</td>
-      <td>{{d.departmentName }}</td>
 
-      <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetDepartment(d.deptId)">Edit</button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(d.departmentName)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="DepartmentList">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Department</th>
+        <th>Manager</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of DepartmentList | paginate: {itemsPerPage: 5, currentPage: p}">
+        <td>{{ d.deptId }}</td>
+        <td>{{ d.departmentName }}</td>
+        <td>{{ d.managerName }}</td>
+
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetDepartment(d.deptId)"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(d)"><i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
+
 
 <!-- Modal -->
 <div class="modal fade" id="departmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content"  #form="ngForm" (ngSubmit)="form.form.valid && SubmitDepartment(form)" autocomplete="off" >
       <div class="modal-header">
-        <h5 class="modal-title" id="departmentModalLabel">New Department</h5>
+        <h5 class="modal-title" id="departmentModalLabel">Department Entry</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <input type="hidden" [(ngModel)]="Department.deptId" />
+        <input type="hidden" name="deptId" [(ngModel)]="Department.deptId" />
 
         <div class="form-group">
-          <label>DepartmentName</label>
-          <input type="text" class=" form-control" [(ngModel)]="Department.departmentName" />
+          <label>Department</label>
+          <input type="text" class=" form-control" name="departmentName" #departmentName="ngModel" [ngClass]="{'is-invalid':form.submitted && departmentName.invalid }" required="" [(ngModel)]="Department.departmentName" />
+        </div>
+
+        <div class="form-group">
+          <label>Manager </label>
+          <select class=" form-control" name="managerId" #managerId="ngModel" [ngClass]="{'is-invalid':form.submitted && managerId.invalid }" required="" [(ngModel)]="Department.managerId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let manager of ManagerList" [ngValue]="manager.managerId">
+              {{manager.managerName}}
+            </option>
+          </select>
+          <span class="text-danger" *ngIf="Department.managerError">{{Department.managerError }}</span>
+        </div>
+        <div class="form-group">
+          <label>Company </label>
+          <select class=" form-control" name="companyId" #companyId="ngModel" [ngClass]="{'is-invalid':form.submitted && companyId.invalid }" required="" [(ngModel)]="Department.companyId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let company of CompanyList" [ngValue]="company.companyId">
+              {{company.companyName}}
+            </option>
+          </select>
+          <span class="text-danger" *ngIf="Department.managerError">{{Department.managerError }}</span>
         </div>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="SubmitDepartment()">Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 

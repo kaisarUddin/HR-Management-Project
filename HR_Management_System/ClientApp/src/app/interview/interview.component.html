@@ -1,0 +1,150 @@
+<h1 id="tableLabel">Interview</h1>
+
+
+<p *ngIf="!InterviewList"><em class="text-info">Loading...</em></p>
+
+<div class="btn-group">
+  <button class="btn btn-primary" (click)="LoadList()">
+    <i class="fa fa-refresh"></i>
+  </button>
+
+  <button type="button" data-toggle="modal" data-target="#interviewModal" class="btn btn-success">
+    <i class="fa fa-plus"></i>
+  </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
+</div>
+
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="InterviewList">
+    <thead>
+      <tr>
+        <th>Interview Id</th>
+        <th>Candidate Name</th>
+        <th>Post</th>
+        <th>Time</th>
+        <th>Mobile</th>
+        <th>Interviewer</th>
+        <th>Remarks</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of InterviewList  | paginate: {itemsPerPage: 5, currentPage: p}">
+        <td>{{ i.interviewId }}</td>
+        <td>{{i.candidateName }}</td>
+        <td>{{ i.jobTitle }}</td>
+        <td>{{i.interviewDate }}</td>
+        <td>{{i.phone }}</td>
+        <td>{{i.interviewer }}</td>
+        <td>{{i.remarks }}</td>
+
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetInterview(i.interviewId)"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(i)"><i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
+<!-- Modal -->
+<div class="modal fade" id="interviewModal" tabindex="-1" role="dialog" aria-labelledby="interviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content" #form="ngForm" (ngSubmit)="form.form.valid && SubmitInterview(form)" autocomplete="off">
+      <div class="modal-header">
+        <h5 class="modal-title" id="interviewModalLabel">New Interview</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="interviewId" [(ngModel)]="Interview.interviewId" />
+
+        <div class="form-group">
+          <label>Candidate</label>
+          <input type="text" class=" form-control" name="candidateName" #candidateName="ngModel" [ngClass]="{'is-invalid':form.submitted && candidateName.invalid }" [(ngModel)]="Interview.candidateName" />
+        </div>
+        <div class="form-group">
+          <label>Job</label>
+          <select class=" form-control" name="jobId" #jobId="ngModel" [ngClass]="{'is-invalid':form.submitted && jobId.invalid }" [(ngModel)]="Interview.jobId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let job of JobList" [ngValue]="job.jobId">
+              {{job.jobTitle}}
+            </option>
+          </select>
+          <span class="text-danger" *ngIf="Interview.jobError">{{Interview.jobError }}</span>
+
+        </div>
+
+
+        <div class="form-group">
+          <label>Interview Time</label>
+          <input type="datetime-local" class=" form-control" name="interviewDate" #interviewDate="ngModel" [ngClass]="{'is-invalid':form.submitted && interviewDate.invalid }" [(ngModel)]="Interview.interviewDate" />
+        </div>
+        <div class="form-group">
+          <label>Mobile</label>
+          <input type="tel" class=" form-control" name="phone" #phone="ngModel" [ngClass]="{'is-invalid':form.submitted && phone.invalid }" [(ngModel)]="Interview.phone" />
+        </div>
+        <div class="form-group">
+          <label>Interviewer</label>
+          <textarea class=" form-control" name="interviewer" #interviewer="ngModel" [ngClass]="{'is-invalid':form.submitted && interviewer.invalid }" [(ngModel)]="Interview.interviewer"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Result</label>
+          <select class=" form-control" name="remarks" #remarks="ngModel" [ngClass]="{'is-invalid':form.submitted && remarks.invalid }" required="" [(ngModel)]="Interview.remarks">
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option value="Selected">Selected</option>
+            <option value="Not Selected">Not Selected</option>
+            <option value="Waiting">Waiting</option>
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+          <label>Company</label>
+          <select class=" form-control" name="companyId" #companyId="ngModel" [ngClass]="{'is-invalid':form.submitted && companyId.invalid }" [(ngModel)]="Interview.companyId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let company of CompanyList" [ngValue]="company.companyId">
+              {{company.companyName}}
+            </option>
+          </select>
+          <span class="text-danger" *ngIf="Interview.companyError">{{Interview.companyError }}</span>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
+        <button type="submit" class="btn btn-primary" >Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span class="h2 text-warning">Delete {{Interview.candidateName}}?</span>
+      </div>
+      <div class="modal-footer btn-group">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteInterview(Interview.interviewId)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

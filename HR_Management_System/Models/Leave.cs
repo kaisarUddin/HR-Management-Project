@@ -35,7 +35,7 @@ namespace HR_Management_System.Models
 
         [DisplayName("TotalLeave")]
         [JsonPropertyName("totalLeave")]
-        public byte TotalLeave { get; set; }
+        public int TotalLeave { get; set; }
         [JsonPropertyName("approvalStatus")]
         public string ApprovalStatus { get; set; }
 
@@ -43,7 +43,8 @@ namespace HR_Management_System.Models
         [ForeignKey("Employee")]
         public int EmployeeId { get; set; }
         public virtual Employee Employee { get; set; }
+        public virtual ICollection<Salary> Salaries { get; set; }
 
-       
+
     }
 }

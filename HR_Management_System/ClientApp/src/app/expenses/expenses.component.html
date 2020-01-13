@@ -1,0 +1,136 @@
+<h1 id="tableLabel">Expenses</h1>
+
+
+
+<p *ngIf="!ExpensesList"><em class="text-info">Loading...</em></p>
+
+<div class="btn-group">
+  <button class="btn btn-primary" (click)="LoadList()">
+    <i class="fa fa-refresh"></i>
+  </button>
+
+  <button type="button" data-toggle="modal" data-target="#expensesModal" class="btn btn-success">
+    <i class="fa fa-plus"></i>
+  </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
+
+</div>
+
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="ExpensesList">
+    <thead>
+    <tr>
+      <th>ExpensesId</th>
+      <th>Department</th>
+      <th>Description</th>
+      <th>Purchase Date</th>
+      <th>Purchase By</th>
+      <th>Bill</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let e of ExpensesList | paginate: {itemsPerPage: 5, currentPage: p}">
+      <td>{{ e.expensesId }}</td>
+      <td>{{ e.departmentName }}</td>
+      <td>{{e.title }}</td>
+      <td>{{e.purchaseDate }}</td>
+      <td>{{e.purchaseBy }}</td>
+      <td class="img-thumbnail mb-3 " >
+        <img [src]="e.bill" alt="{{e.bill}}"  width="200" height="200" class="text-center" style="margin: 0  auto" />
+      </td>
+
+      <td class="btn-group">
+        <button class="btn btn-primary" (click)="GetExpenses(e.expensesId)"> <i class="fa fa-edit"></i></button>
+        <button class="btn btn-danger" (click)="DeleteConfirmation(e)"> <i class="fa fa-trash-o"></i></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
+
+<!-- Modal -->
+<div class="modal fade" id="expensesModal" tabindex="-1" role="dialog" aria-labelledby="expensesModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content" #form="ngForm" (ngSubmit)="form.form.valid && SubmitExpenses(form)" autocomplete="off" enctype="multipart/form-data">
+      <div class="modal-header">
+        <h5 class="modal-title" id="expensesModalLabel">New</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="expensesId" [(ngModel)]="Expenses.expensesId" />
+
+        <div class="form-group">
+          <label>Department</label>
+          <select class=" form-control" name="deptId" #deptId="ngModel" [ngClass]="{'is-invalid':form.submitted && deptId.invalid }" required="" [(ngModel)]="Expenses.deptId">
+
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option *ngFor="let d of DepartmentList" [ngValue]="d.deptId">
+              {{d.departmentName}}
+            </option>
+          </select>
+         
+        </div>
+
+       
+        <div class="form-group">
+          <label>Title</label>
+          <textarea type="text" class=" form-control" name="title" #title="ngModel" [ngClass]="{ 'is-invalid': form.submitted &&  title.invalid }" required  [(ngModel)]="Expenses.title" ></textarea>
+          <div class="text-danger" *ngIf=" form.submitted &&  title.invalid ">Title Required</div>
+        </div>
+        <div class="form-group">
+          <label>PurchaseDate</label>
+          <input type="date" class=" form-control" name="purchaseDate"
+                 #purchaseDate="ngModel" [ngClass]="{ 'is-invalid': form.submitted &&  purchaseDate.invalid }" required [(ngModel)]="Expenses.purchaseDate" />
+        </div>
+        <div class="form-group">
+          <label>PurchaseBy</label>
+          <input type="text" class=" form-control" name="purchaseBy"
+                 #purchaseBy="ngModel" [ngClass]="{ 'is-invalid': form.submitted &&  purchaseBy.invalid }" required [(ngModel)]="Expenses.purchaseBy" />
+        </div>
+        <div class="form-group">
+
+          <figure>
+            <div class="img-thumbnail mb-3 " *ngIf="photoPreview">
+              <img [src]="photoPreview" width="300" class="text-center" style="margin: 0  auto" />
+            </div>
+            <figcaption>
+              <label>Photo</label>
+              <input type="file" class=" form-control" [(ngModel)]="Expenses.upload" name="upload"
+                     #upload="ngModel" (change)="onFileChanged($event)" />
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span class="h2 text-warning">Delete {{Expenses.title}}?</span>
+      </div>
+      <div class="modal-footer btn-group">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteExpenses(Expenses.expensesId)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HR_Management_System;
+using HR_Management_System.Data;
 using HR_Management_System.Models;
 
-namespace HR_Management_System.ApiControllers
+namespace HR_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,9 +24,19 @@ namespace HR_Management_System.ApiControllers
 
         // GET: api/TrainingApi
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Training>>> GetTrainings()
+        public async Task<ActionResult<IEnumerable<Object>>> GetTrainings()
         {
-            return await _context.Trainings.ToListAsync();
+            try
+            {
+                var data=_context.Trainings.Select(t=>new{trainingId=t.TrainingId,trainingTitle=t.TrainingTitle,startDate=t.StartDate,endDate=t.EndDate,employeeId=t.Employee.EmployeeId,fullName=t.Employee.FullName,departmentName=t.Department.DepartmentName}).ToList();
+                return data;
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e);
+                return null;
+            }
         }
 
         // GET: api/TrainingApi/5

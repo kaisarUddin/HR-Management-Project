@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HR_Management_System;
+using HR_Management_System.Data;
 using HR_Management_System.Models;
 
-namespace HR_Management_System.ApiControllers
+namespace HR_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

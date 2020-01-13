@@ -7,142 +7,196 @@
 
 <div class="btn-group">
   <button class="btn btn-primary" (click)="LoadList()">
-    Refresh
+    <i class="fa fa-refresh"></i>
   </button>
 
   <button type="button" data-toggle="modal" data-target="#salaryModal" class="btn btn-success">
-    Create New
+    <i class="fa fa-plus"></i>
   </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
 </div>
 
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="SalaryList">
-  <thead>
-    <tr>
-      <th>Salary Id</th>
-      <th>Basic</th>
-      <th>Salary Type</th>
-      <th>T/A</th>
-      <th>H/R</th>
-      <th>M/A</th>
-      <th>F/A</th>
-      <th>Festival Bonus</th>
-      <th>P/F</th>
-      <th>Gross Salary</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let s of SalaryList">
-      <td>{{ s.salaryId }}</td>
-      <td>{{ s.salaryType }}</td>
-      <td>{{ s.basic }}</td>
-      <td>{{ s.transportAllowance }}</td>
-      <td>{{ s.houseRent }}</td>
-      <td>{{ s.medicalAllowance }}</td>
-      <td>{{ s.foodAllowance }}</td>
-      <td>{{ s.festivalBonus }}</td>
-      <td>{{ s.providentFund }}</td>
-      <td>{{ s.grossSalary }}</td>
-      <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetSalary(s.salaryId)">Edit</button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(s)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="SalaryList">
+    <thead>
+      <tr>
+        <th>Salary Id</th>
+        <th>Employee Name</th>
+        <th>Salary Type</th>
+        <th>Policy Type</th>
+        <th>Basic</th>
+        <th>Over Time</th>
+        <th>T/A</th>
+        <th>H/R</th>
+        <th>M/A</th>
+        <th>F/A</th>
+        <th>Festival Bonus</th>
+        <th>Over Time Rate</th>
+        <th>Total Leave</th>
+        <th>Absent Fine</th>
+        <th>P/F</th>
+        <th>Gross Salary</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of SalaryList | paginate: {itemsPerPage: 5, currentPage: p}">
+        <td>{{ s.salaryId }}</td>
+        <td>{{ s.employeeName }}</td>
+        <td>{{ s.salaryType }}</td>
+        <td>{{ s.policyType }}</td>
+        <td>{{ s.basic }}</td>
+        <td>{{ s.overTime }}</td>
+        <td>{{ s.transportAllowance }}</td>
+        <td>{{ s.houseRent }}</td>
+        <td>{{ s.medicalAllowance }}</td>
+        <td>{{ s.foodAllowance }}</td>
+        <td>{{ s.festivalBonus }}</td>
+        <td>{{ s.oTRate }}</td>
+        <td>{{ s.totalLeave }}</td>
+        <td>{{ s.leaveFine }}</td>
+        <td>{{ s.providentFund }}</td>
+        <td>{{ s.grossSalary }}</td>
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetSalary(s.salaryId)"> <i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(s)"> <i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
 
 
 <!-- Modal -->
 <div class="modal fade" id="salaryModal" tabindex="-1" role="dialog" aria-labelledby="salaryModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <form class="modal-content"  #form="ngForm" (ngSubmit)="form.form.valid && SubmitSalary(form)" autocomplete="off">
+    <form class="modal-content" #form="ngForm" (ngSubmit)="form.form.valid && SubmitSalary(form)" autocomplete="off">
       <div class="modal-header">
-        <h5 class="modal-title" id="salaryModalLabel">New Person</h5>
+        <h5 class="modal-title" id="salaryModalLabel">Salary Entry</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <input type="hidden" [(ngModel)]="Salary.salaryId" />
-        <div class="form-group">
-          <label>Salary Type</label>
-          <select class=" form-control" name="salarytype" #salarytype="ngModel" [ngClass]="{'is-invalid':form.submitted && salarytype.invalid }" required="" [(ngModel)]="Salary.salarytype">
-            <option value="undefined">
-              Please select Value
-            </option>
-            <option value="Hourly">Hourly</option>
-            <option value="Monthly" >Monthly</option>
-            <option value="Yearly" >Yearly</option>
-          </select>
+        <input type="hidden" name="salaryId" [(ngModel)]="Salary.salaryId" />
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Salary Type</label>
+            <select class=" form-control" name="salaryType" #salaryType="ngModel" [ngClass]="{'is-invalid':form.submitted && salaryType.invalid }" required="" [(ngModel)]="Salary.salaryType">
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option value="Hourly">Hourly</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Yearly">Yearly</option>
+            </select>
+          </div>
+          <div class="form-group col-6">
+            <label>Employee Name</label>
+            <select class=" form-control" name="employeeId" #employeeId="ngModel" [ngClass]="{'is-invalid':form.submitted && employeeId.invalid }" required="" [(ngModel)]="Salary.employeeId">
+
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option *ngFor="let employee of EmployeeList" [ngValue]="employee.employeeId">
+                {{employee.fullName}}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="Salary.employeeError">{{Salary.employeeError }}</span>
+
+          </div>
         </div>
-        <div class="form-group">
-          <label>Basic</label>
-          <input type="number" class=" form-control" name="basic" #basic="ngModel" [ngClass]="{'is-invalid':form.submitted && basic.invalid }" required="" [(ngModel)]="Salary.basic" />
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Payroll Policy</label>
+            <select class=" form-control" name="policyId" #policyId="ngModel" [(ngModel)]="Salary.policyId" (change)=" changePolicy()">
+
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option *ngFor="let policy of PayrollPolicyList" [ngValue]="policy.policyId">
+                {{policy.policyType}}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="Salary.payrollPolicyError">{{Salary.payrollPolicyError }}</span>
+
+          </div>
+          <div class="form-group col-6">
+            <label>Basic</label>
+            <input type="number" class=" form-control" name="basic" #basic="ngModel" [ngClass]="{'is-invalid':form.submitted && basic.invalid }" [(ngModel)]="Salary.basic" required (change)="basicChange()" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-6">
+            <label>T/A</label>
+            <input type="number" class=" form-control" name="transportAllowance" #transportAllowance="ngModel" [ngClass]="{'is-invalid':form.submitted && transportAllowance.invalid }" [(ngModel)]="Salary.transportAllowance" readonly="" />
+          </div>
+
+
+          <div class="form-group col-6">
+            <label>H/R</label>
+            <input type="number" class=" form-control" name="houseRent" #houseRent="ngModel" [ngClass]="{'is-invalid':form.submitted && houseRent.invalid }" [(ngModel)]="Salary.houseRent" readonly="" />
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>T/A</label>
-          <input type="number" class=" form-control" name="transportAllowance" #transportAllowance="ngModel" [ngClass]="{'is-invalid':form.submitted && transportAllowance.invalid }" required="" [(ngModel)]="Salary.transportAllowance" />
+        <div class="row">
+          <div class="form-group col-6">
+            <label>M/A</label>
+            <input type="number" class=" form-control" name="medicalAllowance" #medicalAllowance="ngModel" [ngClass]="{'is-invalid':form.submitted && medicalAllowance.invalid }" [(ngModel)]="Salary.medicalAllowance" readonly="" />
+          </div>
+          <div class="form-group col-6">
+            <label>F/A</label>
+            <input type="number" class=" form-control" name="foodAllowance" #foodAllowance="ngModel" [ngClass]="{'is-invalid':form.submitted && foodAllowance.invalid }" [(ngModel)]="Salary.foodAllowance" readonly="" />
+          </div>
         </div>
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Festival Bonus</label>
+            <input type="number" class=" form-control" name="festivalBonus" #festivalBonus="ngModel" [ngClass]="{'is-invalid':form.submitted && festivalBonus.invalid }" [(ngModel)]="Salary.festivalBonus" readonly="" />
+          </div>
+          <div class="form-group col-6">
+            <label>P/F</label>
+            <input type="number" class=" form-control" name="providentFund" #providentFund="ngModel" [ngClass]="{'is-invalid':form.submitted && providentFund.invalid }" [(ngModel)]="Salary.providentFund" readonly="" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Over Time </label>
+            <input type="number" class=" form-control" name="overTime" #overTime="ngModel" [ngClass]="{'is-invalid':form.submitted && overTime.invalid }" [(ngModel)]="Salary.overTime"  />
+          </div>
+          <div class="form-group col-6">
+            <label>Over Time Rate</label>
+            <input type="number" class=" form-control" name="oTRate" #oTRate="ngModel" [ngClass]="{'is-invalid':form.submitted && oTRate.invalid }" [(ngModel)]="Salary.oTRate" readonly="" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-6">
+            <label>Total Leave</label>
+            <select class=" form-control" name="leaveId" #leaveId="ngModel" [(ngModel)]="Salary.leaveId" (change)=" changeLeave()">
+
+              <option value="undefined">
+                Please select Value
+              </option>
+              <option *ngFor="let l of LeaveList" [ngValue]="l.leaveId">
+                {{l.totalLeave}}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="Salary.payrollPolicyError">{{Salary.payrollPolicyError }}</span>
+
+          </div>
+          <div class="form-group col-6">
+            <label>Leave Fine</label>
+            <input type="number" class=" form-control" name="leaveFine" #leaveFine="ngModel" [ngClass]="{'is-invalid':form.submitted && leaveFine.invalid }" [(ngModel)]="Salary.leaveFine" readonly=""/>
+          </div>
 
 
-        <div class="form-group">
-          <label>H/R</label>
-          <input type="number" class=" form-control" name="basic" #basic="ngModel" [ngClass]="{'is-invalid':form.submitted && basic.invalid }" required="" [(ngModel)]="Salary.houseRent" />
         </div>
-
-        <div class="form-group">
-          <label>M/A</label>
-          <input type="number" class=" form-control" name="medicalAllowance" #medicalAllowance="ngModel" [ngClass]="{'is-invalid':form.submitted && medicalAllowance.invalid }" required="" [(ngModel)]="Salary.medicalAllowance" />
-        </div>
-        <div class="form-group">
-          <label>F/A</label>
-          <input type="number" class=" form-control" name="foodAllowance" #foodAllowance="ngModel" [ngClass]="{'is-invalid':form.submitted && foodAllowance.invalid }" required="" [(ngModel)]="Salary.foodAllowance" />
-        </div>
-        <div class="form-group">
-          <label>Festival Bonus</label>
-          <input type="number" class=" form-control" name="festivalBonus" #festivalBonus="ngModel" [ngClass]="{'is-invalid':form.submitted && festivalBonus.invalid }" required="" [(ngModel)]="Salary.festivalBonus" />
-        </div>
-        <div class="form-group">
-          <label>P/F</label>
-          <input type="text" class=" form-control" name="providentFund" #providentFund="ngModel" [ngClass]="{'is-invalid':form.submitted && providentFund.invalid }" required="" [(ngModel)]="Salary.providentFund" />
-        </div>
-        <div class="form-group">
+        <div class="form-group ">
           <label>Gross Salary</label>
-          <input type="text" class=" form-control" name="grossSalary" #grossSalary="ngModel" [ngClass]="{'is-invalid':form.submitted && grossSalary.invalid }" required="" [(ngModel)]="Salary.grossSalary" />
-        </div>
-
-
-        <div class="form-group">
-          <label>Employee Name</label>
-          <select class=" form-control" [(ngModel)]="Salary.employeeId">
-
-            <option value="undefined">
-              Please select Value
-            </option>
-            <option *ngFor="let employee of EmployeeList" [ngValue]="employee.employeeId">
-              {{employee.fullName}}
-            </option>
-          </select>
-          <span class="text-danger" *ngIf="Salary.employeeError">{{Salary.employeeError }}</span>
-
-        </div>
-        <div class="form-group">
-          <label>Payroll Policy</label>
-          <select class=" form-control" [(ngModel)]="Salary.policyId">
-
-            <option value="undefined">
-              Please select Value
-            </option>
-            <option *ngFor="let policy of PayrollPolicyList" [ngValue]="policy.policyId">
-              {{policy.policyId}}
-            </option>
-          </select>
-          <span class="text-danger" *ngIf="Salary.countryError">{{Salary.payrollPolicyError }}</span>
-
+          <input type="number" class=" form-control" name="grossSalary" #grossSalary="ngModel" [ngClass]="{'is-invalid':form.submitted && grossSalary.invalid }" [(ngModel)]="Salary.grossSalary" readonly="" />
         </div>
       </div>
 

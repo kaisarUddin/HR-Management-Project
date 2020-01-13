@@ -6,44 +6,52 @@
 
 <div class="btn-group">
   <button class="btn btn-primary" (click)="LoadList()">
-    Refresh
+    <i class="fa fa-refresh"></i>
   </button>
 
   <button type="button" data-toggle="modal" data-target="#payrollPolicyModal" class="btn btn-success">
-    Add New
+    <i class="fa fa-plus"></i>
   </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
 </div>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="PayrollPolicyList">
-  <thead>
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="PayrollPolicyList">
+    <thead>
     <tr>
-      <th>PayrollPolicy Id</th>
+      <th>Policy Id</th>
+      <th>Policy Category</th>
       <th>Transport Allowance</th>
       <th>House Rent</th>
       <th>Medical Allowance</th>
       <th>Food Allowance</th>
       <th>Festival Bonus</th>
-      <th>Povident Fund</th>
+     
+      <th>Provident Fund</th>
       <th>Action</th>
     </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let p of PayrollPolicyList">
-      <td>{{ p.policyId }}</td>
+    </thead>
+    <tbody>
+    <tr *ngFor="let p of PayrollPolicyList | paginate: {itemsPerPage: 5, currentPage: p}">
+      <td>{{p.policyId}}</td>
+      <td>{{p.policyType}}</td>
       <td>{{p.tA }}</td>
       <td>{{p.hR }}</td>
       <td>{{p.mA }}</td>
       <td>{{p.fA }}</td>
       <td>{{p.fB }}</td>
+     
       <td>{{p.pF }}</td>
 
       <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetPayrollPolicy(p.policyId)">Edit</button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(p)">Delete</button>
+        <button class="btn btn-primary" (click)="GetPayrollPolicy(p.policyId)"> <i class="fa fa-edit"></i></button>
+        <button class="btn btn-danger" (click)="DeleteConfirmation(p)"> <i class="fa fa-trash-o"></i></button>
       </td>
     </tr>
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</div>
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
 
 <!-- Modal -->
 <div class="modal fade" id="payrollPolicyModal" tabindex="-1" role="dialog" aria-labelledby="payrollPolicyModalLabel" aria-hidden="true">
@@ -56,7 +64,20 @@
         </button>
       </div>
       <div class="modal-body">
-        <input type="hidden" [(ngModel)]="PayrollPolicy.policyId" />
+        <input type="hidden" name="policyId" [(ngModel)]="PayrollPolicy.policyId" />
+
+        <div class="form-group">
+          <label>Policy Type</label>
+          <select class=" form-control" name="policyType" #policyType="ngModel" [ngClass]="{'is-invalid':form.submitted && policyType.invalid }" required="" [(ngModel)]="PayrollPolicy.policyType">
+            <option value="undefined">
+              Please select Value
+            </option>
+            <option value="Standard">Standard</option>
+            <option value="Mid Level">Mid Level</option>
+            <option value="Entry Level">Entry Level</option>
+            <option value="Probationary">Probationary</option>
+          </select>
+        </div>
 
         <div class="form-group">
           <label>Transport Allowance</label>
@@ -78,6 +99,8 @@
           <label>Festival Bonus</label>
           <input type="number" class=" form-control" name="fB" #fB="ngModel" [ngClass]="{'is-invalid':form.submitted && fB.invalid }" required="" [(ngModel)]="PayrollPolicy.fB" />
         </div>
+       
+
         <div class="form-group">
           <label>Provident Fund</label>
           <input type="number" class=" form-control" name="pF" #pF="ngModel" [ngClass]="{'is-invalid':form.submitted && pF.invalid }" required="" [(ngModel)]="PayrollPolicy.pF" />

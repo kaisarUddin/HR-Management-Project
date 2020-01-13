@@ -1,6 +1,43 @@
+<!--<body>
+<app-nav-menu></app-nav-menu>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+</body>-->
+
 <body>
   <app-nav-menu></app-nav-menu>
-  <div class="container">
-    <router-outlet></router-outlet>
-  </div>
+<div class="" >
+  <mat-sidenav-container height="100%">
+    <mat-sidenav #sidenav mode="side" opened 
+                 style="background-color: aquamarine" >
+      <mat-nav-list [routerLinkActive]="['link-active']">
+        <a mat-list-item [routerLink]="['/employee']">Employee</a>
+        <a mat-list-item [routerLink]="['/department']">Department</a>
+        <a mat-list-item [routerLink]="['/company']">Company</a>
+        <a mat-list-item [routerLink]="['/manager']">Manager</a>
+        <a mat-list-item [routerLink]="['/designation']">Designation</a>
+        <a mat-list-item [routerLink]="['/payrollPolicy']">Payroll Policy</a>
+        <a mat-list-item [routerLink]="['/salary']">Salary</a>
+        <a mat-list-item [routerLink]="['/expenses']">Expenses</a>
+        <a mat-list-item [routerLink]="['/training']">Training</a>
+        <a mat-list-item [routerLink]="['/announcement']">Announcement</a>
+        <a mat-list-item [routerLink]="['/remarks']">Remarks</a>
+        <a mat-list-item [routerLink]="['/attendance']">Attendance</a>
+        <a mat-list-item [routerLink]="['/shift']">Shift</a>
+        <a mat-list-item [routerLink]="['/job']">Job</a>
+        <a mat-list-item [routerLink]="['/leave']">Leave</a>
+        <a mat-list-item [routerLink]="['/enlistment']">Enlistment</a>
+        <a mat-list-item [routerLink]="['/interview']">Interview</a>
+        <a mat-list-item [routerLink]="['/holiday']">Holiday</a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <button (click)="sidenav.toggle()"><i class=" text-info fa fa-list"></i></button>
+
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
 </body>

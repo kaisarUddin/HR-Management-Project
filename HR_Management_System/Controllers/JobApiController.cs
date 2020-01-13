@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HR_Management_System.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HR_Management_System;
 using HR_Management_System.Models;
 
-namespace HR_Management_System.ApiControllers
+namespace HR_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,35 +23,47 @@ namespace HR_Management_System.ApiControllers
 
         // GET: api/JobApi
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Jobs>>> GetJobs()
+        public async Task<ActionResult<IEnumerable<Job>>> GetJobs()
         {
-            return await _context.Jobs.ToListAsync();
+            try
+            {
+                var data = await _context.Jobs.ToListAsync();
+                return data;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+            
         }
 
         // GET: api/JobApi/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Jobs>> GetJobs(int id)
+        public async Task<ActionResult<Job>> GetJob(int id)
         {
-            var jobs = await _context.Jobs.FindAsync(id);
+            var job = await _context.Jobs.FindAsync(id);
 
-            if (jobs == null)
+            if (job == null)
             {
                 return NotFound();
             }
 
-            return jobs;
+            return job;
         }
 
         // PUT: api/JobApi/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutJobs(int id, Jobs jobs)
+        public async Task<IActionResult> PutJob(int id, Job job)
         {
-            if (id != jobs.JobsId)
+            if (id != job.JobId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(jobs).State = EntityState.Modified;
+            _context.Entry(job).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +71,7 @@ namespace HR_Management_System.ApiControllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!JobsExists(id))
+                if (!JobExists(id))
                 {
                     return NotFound();
                 }
@@ -73,34 +85,46 @@ namespace HR_Management_System.ApiControllers
         }
 
         // POST: api/JobApi
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Jobs>> PostJobs(Jobs jobs)
+        public async Task<ActionResult<Job>> PostJob(Job job)
         {
-            _context.Jobs.Add(jobs);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Jobs.Add(job);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetJob", new { id = job.JobId }, job);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+          
 
-            return CreatedAtAction("GetJobs", new { id = jobs.JobsId }, jobs);
+           
         }
 
         // DELETE: api/JobApi/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Jobs>> DeleteJobs(int id)
+        public async Task<ActionResult<Job>> DeleteJob(int id)
         {
-            var jobs = await _context.Jobs.FindAsync(id);
-            if (jobs == null)
+            var job = await _context.Jobs.FindAsync(id);
+            if (job == null)
             {
                 return NotFound();
             }
 
-            _context.Jobs.Remove(jobs);
+            _context.Jobs.Remove(job);
             await _context.SaveChangesAsync();
 
-            return jobs;
+            return job;
         }
 
-        private bool JobsExists(int id)
+        private bool JobExists(int id)
         {
-            return _context.Jobs.Any(e => e.JobsId == id);
+            return _context.Jobs.Any(e => e.JobId == id);
         }
     }
 }

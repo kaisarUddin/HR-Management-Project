@@ -6,38 +6,42 @@
 
 <div class="btn-group">
   <button class="btn btn-primary" (click)="LoadList()">
-    Refresh
+    <i class="fa fa-refresh"></i>
   </button>
 
   <button type="button" data-toggle="modal" data-target="#shiftModal" class="btn btn-success">
-    Add New
+    <i class="fa fa-plus"></i>
   </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
 </div>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="ShiftList">
-  <thead>
-    <tr>
-      <th>Shift Id</th>
-      <th>Shift</th>
-      <th>Start Time</th>
-      <th>End Time</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let s of ShiftList">
-      <td>{{ s.shiftId }}</td>
-      <td>{{s.shiftName }}</td>
-      <td>{{s.startTime }}</td>
-      <td>{{s.endTime }}</td>
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="ShiftList">
+    <thead>
+      <tr>
+        <th>Shift Id</th>
+        <th>Shift</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of ShiftList | paginate: {itemsPerPage: 5, currentPage: p}">
+        <td>{{ s.shiftId }}</td>
+        <td>{{s.shiftName }}</td>
+        <td>{{s.startTime }}</td>
+        <td>{{s.endTime }}</td>
 
-      <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetShift(s.shiftId)">Edit</button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(s)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetShift(s.shiftId)"> <i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(s)"> <i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
 
 <!-- Modal -->
 <div class="modal fade" id="shiftModal" tabindex="-1" role="dialog" aria-labelledby="shiftModalLabel" aria-hidden="true">
@@ -54,7 +58,7 @@
 
         <div class="form-group">
           <label>Shift </label>
-          <select class=" form-control" name="shiftName" #shiftName="ngModel" [ngClass]="{'is-invalid':form.submitted && shiftName.invalid }" [(ngModel)]="Shift.shiftName"  required="">
+          <select class=" form-control" name="shiftName" #shiftName="ngModel" [ngClass]="{'is-invalid':form.submitted && shiftName.invalid }" [(ngModel)]="Shift.shiftName" required="">
 
             <option value="undefined">
               Please select Value
@@ -67,11 +71,11 @@
         </div>
         <div class="form-group">
           <label>Start Time</label>
-          <input type="time" class=" form-control" name="startTime" #startTime="ngModel" [ngClass]="{'is-invalid':form.submitted && startTime.invalid }" [(ngModel)]="Shift.startTime"  required="" />
+          <input type="time" class=" form-control" name="startTime" #startTime="ngModel" [ngClass]="{'is-invalid':form.submitted && startTime.invalid }" [(ngModel)]="Shift.startTime" required="" />
         </div>
         <div class="form-group">
           <label>End Time</label>
-          <input type="time" class=" form-control" name="endTime" #endTime="ngModel" [ngClass]="{'is-invalid':form.submitted && endTime.invalid }" [(ngModel)]="Shift.endTime"  required="" />
+          <input type="time" class=" form-control" name="endTime" #endTime="ngModel" [ngClass]="{'is-invalid':form.submitted && endTime.invalid }" [(ngModel)]="Shift.endTime" required="" />
         </div>
 
       </div>

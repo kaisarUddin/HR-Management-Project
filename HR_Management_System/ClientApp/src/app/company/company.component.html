@@ -1,0 +1,93 @@
+<h1 id="tableLabel">Company</h1>
+
+
+
+<p *ngIf="!CompanyList"><em class="text-info">Loading...</em></p>
+
+<div class="btn-group">
+  <button class="btn btn-primary" (click)="LoadList()">
+ <i class="fa fa-refresh"></i>
+  </button>
+
+  <button type="button" data-toggle="modal" data-target="#companyModal" class="btn btn-success">
+    <i class="fa fa-plus"></i>
+  </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
+</div>
+
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="CompanyList">
+    <thead>
+      <tr>
+        <th>Company Id</th>
+        <th>Company</th>
+        <th>Address</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of CompanyList | paginate: {itemsPerPage: 5, currentPage: p}">
+        <td>{{ c.companyId }}</td>
+        <td>{{c.companyName }}</td>
+        <td>{{c.companyAddress }}</td>
+
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetCompany(c.companyId)"> <i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(c)"> <i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls (pageChange)="p=$event"></pagination-controls>
+<!-- Modal -->
+<div class="modal fade" id="companyModal" tabindex="-1" role="dialog" aria-labelledby="companyModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content" #form="ngForm" (ngSubmit)="form.form.valid && SubmitCompany(form)" autocomplete="off" enctype="multipart/form-data">
+      <div class="modal-header">
+        <h5 class="modal-title" id="companyModalLabel">New Company</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="companyId" [(ngModel)]="Company.companyId" />
+
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" class=" form-control" name="companyName"
+                 #companyName="ngModel" [ngClass]="{ 'is-invalid': form.submitted &&  companyName.invalid }" required [(ngModel)]="Company.companyName" />
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" class=" form-control" name="companyAddress"
+                 #companyAddress="ngModel" [ngClass]="{ 'is-invalid': form.submitted &&  companyAddress.invalid }" required [(ngModel)]="Company.companyAddress" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
+        <button type="submit" class="btn btn-primary" >Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span class="h2 text-warning">Delete {{Company.companyName}}?</span>
+      </div>
+      <div class="modal-footer btn-group">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" (click)="DeleteCompany(Company.companyId)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

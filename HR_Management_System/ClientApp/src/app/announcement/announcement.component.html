@@ -11,32 +11,38 @@
   <button type="button" data-toggle="modal" data-target="#announcementModal" class="btn btn-success">
     <i class="fa fa-plus"></i>
   </button>
+  <button type="button" [useExistingCss]="true" styleSheetFile="style.css" class="btn btn-primary" printSectionId="print-section" ngxPrint><i class="fa fa-print"></i></button>
 </div>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="AnnouncementList">
-  <thead>
-    <tr>
-      <th>Announcement Id</th>
-      <th>Title</th>
-      <th>PostedDate</th>
-      <th>Description</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let a of AnnouncementList">
-      <td>{{ a.announcementId }}</td>
-      <td>{{a.title }}</td>
-      <td>{{a.postedDate }}</td>
-      <td>{{a.description }}</td>
+<div id="print-section">
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="AnnouncementList">
+    <thead>
+      <tr>
+        <th>Announcement Id</th>
+        <th>Title</th>
+        <th>PostedDate</th>
+        <th>Description</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let a of AnnouncementList | paginate: {itemsPerPage: 5, currentPage: a}">
+        <td>{{ a.announcementId }}</td>
+        <td>{{a.title }}</td>
+        <td>{{a.postedDate }}</td>
+        <td>{{a.description }}</td>
 
-      <td class="btn-group">
-        <button class="btn btn-primary" (click)="GetAnnouncement(a.announcementId)"><i class="fa fa-edit"></i></button>
-        <button class="btn btn-danger" (click)="DeleteConfirmation(a)"><i class="fa fa-trash-o"></i></button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        <td class="btn-group">
+          <button class="btn btn-primary" (click)="GetAnnouncement(a.announcementId)"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" (click)="DeleteConfirmation(a)"><i class="fa fa-trash-o"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<pagination-controls (pageChange)="a=$event"></pagination-controls>
+
 
 <!-- Modal -->
 <div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" aria-labelledby="announcementModalLabel" aria-hidden="true">
@@ -49,38 +55,38 @@
         </button>
       </div>
       <div class="modal-body">
-        <input type="hidden" [(ngModel)]="Announcement.announcementId" />
+        <input type="hidden" name="announcementId" [(ngModel)]="Announcement.announcementId" />
 
         <div class="form-group">
           <label>Title</label>
-          <input type="text" class=" form-control" name="title" #title="ngModel" [ngClass]="{'is-invalid':form.submitted && title.invalid }"   [(ngModel)]="Announcement.title" />
+          <input type="text" class=" form-control" name="title" #title="ngModel" [ngClass]="{'is-invalid':form.submitted && title.invalid }" [(ngModel)]="Announcement.title" />
         </div>
         <div class="form-group">
           <label>PostedDate</label>
-          <input type="date" class=" form-control"  name="postedDate" #postedDate="ngModel" [ngClass]="{'is-invalid':form.submitted && postedDate.invalid }" [(ngModel)]="Announcement.postedDate" />
+          <input type="date" class=" form-control" name="postedDate" #postedDate="ngModel" [ngClass]="{'is-invalid':form.submitted && postedDate.invalid }" [(ngModel)]="Announcement.postedDate" />
         </div>
         <div class="form-group">
           <label>Description</label>
-          <input type="text" class=" form-control"  name="description" #description="ngModel" [ngClass]="{'is-invalid':form.submitted && description.invalid }" [(ngModel)]="Announcement.description" />
+          <input type="text" class=" form-control" name="description" #description="ngModel" [ngClass]="{'is-invalid':form.submitted && description.invalid }" [(ngModel)]="Announcement.description" />
         </div>
       </div>
       <div class="form-group">
         <label>Department</label>
-        <select class=" form-control"  name="departmentId" #departmentId="ngModel" [ngClass]="{'is-invalid':form.submitted && departmentId.invalid }" [(ngModel)]="Announcement.departmentId">
+        <select class=" form-control" name="deptId" #deptId="ngModel" [ngClass]="{'is-invalid':form.submitted && deptId.invalid }" [(ngModel)]="Announcement.deptId">
 
           <option value="undefined">
             Please select Value
           </option>
-          <option *ngFor="let department of DepartmentList" [ngValue]="department.departmentId">
+          <option *ngFor="let department of DepartmentList" [ngValue]="department.deptId">
             {{department.departmentName}}
           </option>
         </select>
-        <span class="text-danger" *ngIf="Announcement.departmenError">{{Announcement.departmenError }}</span>
+        <span class="text-danger" *ngIf="Announcement.departmentError">{{Announcement.departmentError }}</span>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="Cancel()">Close</button>
-        <button type="submit" class="btn btn-primary" >Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
     </form>
   </div>

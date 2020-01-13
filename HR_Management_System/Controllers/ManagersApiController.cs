@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HR_Management_System.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,11 @@ namespace HR_Management_System.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Manager>>> GetManager()
         {
-            return await _context.Manager.ToListAsync();
+
+            var data = await _context.Manager.ToListAsync();
+
+
+            return data;
         }
 
         // GET: api/ManagersApi/5

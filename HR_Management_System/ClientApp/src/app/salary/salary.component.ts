@@ -13,7 +13,11 @@ export class SalaryComponent {
 
     public SalaryList: Salary[];
     public EmployeeList: Employee[];
+    public LeaveList: Leave[];
     public PayrollPolicyList: PayrollPolicy[];
+    public PayrollPolicy: PayrollPolicy;
+    public Leave: Leave;
+
 
 
     public Http: HttpClient;
@@ -38,10 +42,55 @@ export class SalaryComponent {
         this.Http.get<Salary[]>(this.BaseUrl + 'api/SalaryApi')
             .subscribe(result => {
                 this.SalaryList = result;
-            }, error => this.Toastr.errorToastr(error, "Error"));
+            },
+                error => this.Toastr.errorToastr(error, "Error LoadList"));
         this.Cancel();
         this.LoadEmployeeList();
+        this.LoadLeaveList();
         this.LoadPayrollPolicyList();
+       
+    }
+
+    changePolicy() {
+        if (isNullOrUndefined(this.Salary.policyId)) return;
+        this.Http.get<PayrollPolicy>(this.BaseUrl + 'api/PayrollPolicyApi/' + this.Salary.policyId)
+            .subscribe(result => {
+                this.PayrollPolicy = result;
+                this.basicChange();
+            }, error => this.Toastr.errorToastr(error, "Error changePolicy"));
+
+    }
+    changeLeave() {
+      if (isNullOrUndefined(this.Salary.leaveId)) return;
+      this.Http.get<Leave>(this.BaseUrl + 'api/LeavesApi/' + this.Salary.leaveId)
+        .subscribe(result => {
+          this.Leave = result;
+          this.basicChange();
+        }, error => this.Toastr.errorToastr(error, "Error changeLeave"));
+
+    }
+
+    basicChange() {
+        if (isNullOrUndefined(this.Salary.basic) || isNullOrUndefined(this.PayrollPolicy)) return;
+        this.Salary.transportAllowance = this.Salary.basic * this.PayrollPolicy.tA / 100;
+        this.Salary.houseRent = this.Salary.basic * this.PayrollPolicy.hR / 100;
+        this.Salary.medicalAllowance = this.Salary.basic * this.PayrollPolicy.mA / 100;
+        this.Salary.festivalBonus = this.Salary.basic * this.PayrollPolicy.fB / 100;
+        this.Salary.oTRate = this.Salary.overTime * 500;
+        this.Salary.foodAllowance = this.Salary.basic * this.PayrollPolicy.fA / 100;
+        this.Salary.providentFund = this.Salary.basic * this.PayrollPolicy.pF / 100;
+        this.Salary.leaveFine = this.Leave.totalLeave * 1000;
+
+        this.Salary.grossSalary = this.Salary.basic +
+            this.Salary.transportAllowance +
+            this.Salary.houseRent +
+            this.Salary.medicalAllowance +
+            this.Salary.festivalBonus +
+            this.Salary.oTRate +
+            this.Salary.foodAllowance -
+            this.Salary.providentFund -
+            this.Salary.leaveFine ;
+          ;
     }
 
     public LoadEmployeeList() {
@@ -49,15 +98,23 @@ export class SalaryComponent {
         this.Http.get<Employee[]>(this.BaseUrl + 'api/EmployeesApi')
             .subscribe(result => {
                 this.EmployeeList = result;
-            }, error => this.Toastr.errorToastr(error, "Error"));
+            }, error => this.Toastr.errorToastr(error, "Error LoadEmployeeList"));
         this.Cancel();
+    }
+    public LoadLeaveList() {
+
+      this.Http.get<Leave[]>(this.BaseUrl + 'api/LeavesApi')
+        .subscribe(result => {
+          this.LeaveList = result;
+        }, error => this.Toastr.errorToastr(error, "Error LoadLeaveList"));
+      this.Cancel();
     }
     public LoadPayrollPolicyList() {
 
         this.Http.get<PayrollPolicy[]>(this.BaseUrl + 'api/PayrollPolicyApi')
             .subscribe(result => {
                 this.PayrollPolicyList = result;
-            }, error => this.Toastr.errorToastr(error, "Error"));
+            }, error => this.Toastr.errorToastr(error, "Error LoadPayrollPolicyList"));
         this.Cancel();
     }
 
@@ -79,7 +136,7 @@ export class SalaryComponent {
                 }, error => this.Toastr.errorToastr(error, "Error"));
         }
         else {
-            this.Http.put<Salary>(this.BaseUrl + 'api/LeavesApi/' + this.Salary.salaryId, this.Salary)
+            this.Http.put<Salary>(this.BaseUrl + 'api/SalaryApi/' + this.Salary.salaryId, this.Salary)
                 .subscribe(result => {
                     this.LoadList();
                     form.reset();
@@ -109,9 +166,6 @@ export class SalaryComponent {
     public DeleteSalary(id: number) {
 
 
-
-
-
         this.Http.delete<Salary>(this.BaseUrl + 'api/SalaryApi/' + id)
             .subscribe(result => {
                 this.Salary = result;
@@ -125,18 +179,13 @@ export class SalaryComponent {
 
 class Salary {
 
-    constructor() {
-
-        this.salaryId = 0;
-       
-
-    }
-
-
-
-    public salaryId: number;
+    public salaryId: number = 0;
     public employeeId: number;
+    public employeeName: number;
+    public leaveId: number;
+    public totalLeave: number;
     public policyId: number;
+    public policyType: string;
     public basic: number;
     public salaryType: string;
     public transportAllowance: number;
@@ -144,8 +193,11 @@ class Salary {
     public medicalAllowance: number;
     public foodAllowance: number;
     public festivalBonus: number;
+    public overTime: number;
+    public oTRate: number;
+    public leaveFine: number;
     public providentFund: number;
-    public GrossSalary: number;
+    public grossSalary: number;
     public employeeError: string;
     public payrollPolicyError: string;
 }
@@ -157,14 +209,20 @@ interface Employee {
     fullName: string;
 
 }
-interface PayrollPolicy {
-    policyId: number;
-    tA: number;
-    hR: number;
-    mA: number;
-    fA: number;
-    fB: number;
-    pF: number;
-   
+class Leave {
+  public  leaveId: number;
+  public  totalLeave: number;
+
+}
+class PayrollPolicy {
+    public policyId: number;
+    public policyType: string;
+    public tA: number;
+    public hR: number;
+    public mA: number;
+    public fA: number;
+    public fB: number;
+    public pF: number;
+
 
 }
